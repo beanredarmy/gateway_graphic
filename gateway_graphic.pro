@@ -26,14 +26,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    place.cpp \
-    themewidget.cpp
+    place.cpp
 
 HEADERS += \
         mainwindow.h \
-    place.h \
-    themewidget.h \
-    ui_themewidget.h
+    place.h
 
 FORMS += \
         mainwindow.ui
