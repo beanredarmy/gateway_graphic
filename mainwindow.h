@@ -33,9 +33,9 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    QChart *createLineChart(DataTable dataTable) const;        //Tao bieu do duong thang
-    QChart *createSplineChart(DataTable dataTable) const;      //Tao bieu do duong cong
-    QChart *createScatterChart(DataTable dataTable) const;     //Tao bieu do cham
+    QChart *createLineChart(DataTable dataTable, int valueMax, int valueCount) const;        //Tao bieu do duong thang
+    QChart *createSplineChart(DataTable dataTable, int valueMax, int valueCount) const;      //Tao bieu do duong cong
+    QChart *createScatterChart(DataTable dataTable, int valueMax, int valueCount) const;     //Tao bieu do cham
 
 private:
     Ui::MainWindow *ui;

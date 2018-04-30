@@ -40,6 +40,26 @@ void Place::setCurPressure(float curPressure)
     m_curPressure = curPressure;
 }
 
+DataTable Place::generateData(std::vector<float> dataFromVector)
+{
+    DataTable dataTable;
+
+    /*for (int i(0); i < listCount; i++) {
+        DataList dataList;
+        qreal yValue(0);
+        for (int j(0); j < valueCount; j++) {
+            yValue = yValue + QRandomGenerator::global()->bounded(valueMax / (qreal) valueCount);
+            QPointF value((j + QRandomGenerator::global()->generateDouble()) * ((qreal) m_valueMax / (qreal) valueCount),
+                          yValue);
+            QString label = "Slice " + QString::number(i) + ":" + QString::number(j);
+            dataList << Data(value, label);
+        }
+        dataTable << dataList;
+    }
+*/
+    return dataTable;
+}
+
 QString Place::name() const
 {
     return m_name;

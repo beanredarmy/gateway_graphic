@@ -3,6 +3,12 @@
 
 #include <QString>
 #include <vector>
+#include <QtWidgets/QWidget>
+
+
+typedef QPair<QPointF, QString> Data;
+typedef QList<Data> DataList;
+typedef QList<DataList> DataTable;
 
 class Place
 {
@@ -25,7 +31,7 @@ public:
 
     void updateCurInfor();  //Cap nhat thong tin hien tai
 
-
+    DataTable generateData(std::vector<float> dataFromVector);
 private:
     QString m_name;
     float m_curTemperature; //Nhiet do hien tai
