@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "place.h"
 
 #include <QtCharts/QChartView>
 #include <QtCharts/QPieSeries>
@@ -25,6 +26,7 @@
 #include <QtCharts/QBarCategoryAxis>
 #include <QtWidgets/QApplication>
 #include <QtCharts/QValueAxis>
+typedef QPair<qreal ,qreal> DataAndTime;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -35,6 +37,25 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->cmbBox_temp_dateMode->addItem("Ngày");
     ui->cmbBox_temp_dateMode->addItem("Tháng");
     ui->cmbBox_temp_dateMode->addItem("Năm");
+
+
+    std::vector<DataAndTime> sample;
+    sample.push_back(DataAndTime(1.0,1.0));
+    sample.push_back(DataAndTime(2.0,1.5));
+    sample.push_back(DataAndTime(3.5,2.5));
+    sample.push_back(DataAndTime(4.0,3.0));
+    sample.push_back(DataAndTime(3.0,4.5));
+    sample.push_back(DataAndTime(3.5,5.5));
+    sample.push_back(DataAndTime(7.0,6.0));
+    sample.push_back(DataAndTime(6.0,7.5));
+    sample.push_back(DataAndTime(8.0,9.5));
+
+    Place *vietnam = new Place("Viet Nam");
+    //vietnam->setHour_temp(sample);
+    QChartView *chartView;
+    chartView = new QChartView(createLineChart(vietnam->generateDataTable(sample,1),10,10));
+    chartView->setRenderHint(QPainter::Antialiasing, true);
+    ui->gridLayout_graph_temp->addWidget(chartView);
 
 
 }
@@ -55,12 +76,19 @@ QChart *MainWindow::createLineChart(DataTable dataTable, int valueMax, int value
     QString name("Series ");
     int nameIndex = 0;
     for (const DataList &list : dataTable) {
+        QScatterSeries *series2 = new QScatterSeries(chart);
+        series2->setMarkerSize(5.0);
         QLineSeries *series = new QLineSeries(chart);
         for (const Data &data : list)
+        {
             series->append(data.first);
+            series2->append(data.first);
+        }
         series->setName(name + QString::number(nameIndex));
+        series2->setName(name + QString::number(nameIndex));
         nameIndex++;
         chart->addSeries(series);
+        chart->addSeries(series2);
     }
     //![2]
 
