@@ -6,10 +6,8 @@
 #include <QtWidgets/QWidget>
 
 
-typedef QPair<QPointF, QString> Data;
-typedef QList<Data> DataList;
-typedef QList<DataList> DataTable;
 typedef QPair<qreal ,qreal> DataAndTime;
+
 class Place
 {
 public:
@@ -30,8 +28,6 @@ public:
     void setCurPressure(float curPressure);
 
     void updateCurInfor();  //Cap nhat thong tin hien tai
-
-    DataTable generateDataTable(std::vector<DataAndTime> dataFromVector,int listCount);
 
     std::vector<DataAndTime> hour_temp() const;
     void setHour_temp(const std::vector<DataAndTime> &hour_temp);

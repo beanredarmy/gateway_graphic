@@ -40,22 +40,7 @@ void Place::setCurPressure(float curPressure)
     m_curPressure = curPressure;
 }
 
-DataTable Place::generateDataTable(std::vector<DataAndTime> dataFromVector, int listCount)
-{
-    DataTable dataTable;
 
-    for (int i(0); i < listCount; i++) {
-        DataList dataList;
-        for (int j(0); j < dataFromVector.size(); j++) {
-            QPointF value(dataFromVector[j].second, dataFromVector[j].first);
-            QString label = "Slice " + QString::number(i) + ":" + QString::number(j);
-            dataList << Data(value, label);
-        }
-        dataTable << dataList;
-    }
-
-    return dataTable;
-}
 
 std::vector<DataAndTime> Place::hour_temp() const
 {

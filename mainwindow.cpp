@@ -26,7 +26,6 @@
 #include <QtCharts/QBarCategoryAxis>
 #include <QtWidgets/QApplication>
 #include <QtCharts/QValueAxis>
-typedef QPair<qreal ,qreal> DataAndTime;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -49,11 +48,25 @@ MainWindow::MainWindow(QWidget *parent) :
     sample.push_back(DataAndTime(7.0,6.0));
     sample.push_back(DataAndTime(6.0,7.5));
     sample.push_back(DataAndTime(8.0,9.5));
+    std::vector<DataAndTime> sample2;
+    sample2.push_back(DataAndTime(3.0,0.5));
+    sample2.push_back(DataAndTime(1.0,2.0));
+    sample2.push_back(DataAndTime(5.5,2.2));
+    sample2.push_back(DataAndTime(7.0,3.0));
+    sample2.push_back(DataAndTime(6.0,4.0));
+    sample2.push_back(DataAndTime(4.5,5.0));
+    sample2.push_back(DataAndTime(8.0,6.5));
+    sample2.push_back(DataAndTime(6.0,7.0));
+    sample2.push_back(DataAndTime(8.0,10));
+    std::vector<std::vector<DataAndTime>> asample;
+    asample.push_back(sample);
+    asample.push_back(sample2);
 
-    Place *vietnam = new Place("Viet Nam");
+
+   // Place *vietnam = new Place("Viet Nam");
     //vietnam->setHour_temp(sample);
     QChartView *chartView;
-    chartView = new QChartView(createLineChart(vietnam->generateDataTable(sample,1),10,10));
+    chartView = new QChartView(createLineChart(generateDataTable(asample),10,10));
     chartView->setRenderHint(QPainter::Antialiasing, true);
     ui->gridLayout_graph_temp->addWidget(chartView);
 
@@ -63,6 +76,24 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+DataTable MainWindow::generateDataTable(std::vector<std::vector<DataAndTime>> dateTimeVector)
+{
+    DataTable dataTable;
+
+
+    for (std::vector<std::vector<DataAndTime>>::iterator it = dateTimeVector.begin(); it != dateTimeVector.end(); it++) {
+        DataList dataList;
+        for (std::vector<DataAndTime>::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++) {
+            QPointF value((*it2).second, (*it2).first);
+            QString label = "Slice ";// + QString::number(i) + ":" + QString::number(j);
+            dataList << Data(value, label);
+        }
+        dataTable << dataList;
+    }
+
+    return dataTable;
 }
 
 QChart *MainWindow::createLineChart(DataTable dataTable, int valueMax, int valueCount) const
