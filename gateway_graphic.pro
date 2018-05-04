@@ -26,11 +26,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    place.cpp
+    place.cpp \
+    measureindex.cpp
 
 HEADERS += \
         mainwindow.h \
-    place.h
+    place.h \
+    measureindex.h
 
 FORMS += \
         mainwindow.ui

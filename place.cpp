@@ -1,5 +1,5 @@
 #include "place.h"
-
+#include <QChartView>
 Place::Place()
 {
 

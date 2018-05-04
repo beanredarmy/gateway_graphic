@@ -6,7 +6,7 @@
 #include <QtWidgets/QWidget>
 
 
-typedef QPair<qreal ,qreal> DataAndTime;
+typedef QPair<float ,float> DataAndTime;
 
 class Place
 {

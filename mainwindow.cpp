@@ -1,41 +1,20 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "place.h"
 
-#include <QtCharts/QChartView>
-#include <QtCharts/QPieSeries>
-#include <QtCharts/QPieSlice>
-#include <QtCharts/QAbstractBarSeries>
-#include <QtCharts/QPercentBarSeries>
-#include <QtCharts/QStackedBarSeries>
-#include <QtCharts/QBarSeries>
-#include <QtCharts/QBarSet>
-#include <QtCharts/QLineSeries>
-#include <QtCharts/QSplineSeries>
-#include <QtCharts/QScatterSeries>
-#include <QtCharts/QAreaSeries>
-#include <QtCharts/QLegend>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QFormLayout>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QLabel>
-#include <QtCore/QRandomGenerator>
-#include <QtCharts/QBarCategoryAxis>
-#include <QtWidgets/QApplication>
-#include <QtCharts/QValueAxis>
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    ui->cmbBox_temp_dateMode->addItem("Giờ");
-    ui->cmbBox_temp_dateMode->addItem("Ngày");
-    ui->cmbBox_temp_dateMode->addItem("Tháng");
-    ui->cmbBox_temp_dateMode->addItem("Năm");
+    addDateMode(ui->cmbBox_temp_dateMode);
+    addDateMode(ui->cmbBox_humi_dateMode);
+
+
+    connectFileToClass(m_PlaceVector);
+    addPlace(ui->cmbBox_humi_place);
+    addPlace(ui->cmbBox_temp_place);
 
 
     std::vector<DataAndTime> sample;
@@ -66,11 +45,9 @@ MainWindow::MainWindow(QWidget *parent) :
    // Place *vietnam = new Place("Viet Nam");
     //vietnam->setHour_temp(sample);
     QChartView *chartView;
-    chartView = new QChartView(createLineChart(generateDataTable(asample),10,10));
+    chartView = new QChartView(createLineChart(asample,10,10));
     chartView->setRenderHint(QPainter::Antialiasing, true);
     ui->gridLayout_graph_temp->addWidget(chartView);
-
-
 }
 
 MainWindow::~MainWindow()
@@ -78,25 +55,38 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-DataTable MainWindow::generateDataTable(std::vector<std::vector<DataAndTime>> dateTimeVector)
+
+
+void MainWindow::addDateMode(QComboBox *cmbBox_dateMode)
 {
-    DataTable dataTable;
-
-
-    for (std::vector<std::vector<DataAndTime>>::iterator it = dateTimeVector.begin(); it != dateTimeVector.end(); it++) {
-        DataList dataList;
-        for (std::vector<DataAndTime>::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++) {
-            QPointF value((*it2).second, (*it2).first);
-            QString label = "Slice ";// + QString::number(i) + ":" + QString::number(j);
-            dataList << Data(value, label);
-        }
-        dataTable << dataList;
-    }
-
-    return dataTable;
+    cmbBox_dateMode->addItem("Giờ");
+    cmbBox_dateMode->addItem("Ngày");
+    cmbBox_dateMode->addItem("Tháng");
+    cmbBox_dateMode->addItem("Năm");
 }
 
-QChart *MainWindow::createLineChart(DataTable dataTable, int valueMax, int valueCount) const
+void MainWindow::addPlace(QComboBox *cmbBox_place)
+{
+    for (std::vector<Place*>::iterator it = m_PlaceVector.begin(); it != m_PlaceVector.end(); it++)
+    {
+        cmbBox_place->addItem((*it)->name());
+    }
+}
+
+void MainWindow::connectFileToClass(std::vector<Place *> &placeVector)
+{
+    QDir mDir("/home/bean/gatewaydata");
+    foreach(QFileInfo mItm, mDir.entryInfoList())
+    {
+        if(mItm.fileName() != "." && mItm.fileName() != "..")
+        {
+            Place *newPlace =new Place(mItm.fileName());
+            placeVector.push_back(newPlace);
+        }
+    }
+}
+
+QChart *MainWindow::createLineChart(std::vector<std::vector<DataAndTime>> dateTimeVector, int valueMax, int valueCount) const
 {
     //![1]
     QChart *chart = new QChart();
@@ -106,14 +96,14 @@ QChart *MainWindow::createLineChart(DataTable dataTable, int valueMax, int value
     //![2]
     QString name("Series ");
     int nameIndex = 0;
-    for (const DataList &list : dataTable) {
+    for (std::vector<std::vector<DataAndTime>>::iterator it = dateTimeVector.begin(); it != dateTimeVector.end(); it++)  {
         QScatterSeries *series2 = new QScatterSeries(chart);
         series2->setMarkerSize(5.0);
         QLineSeries *series = new QLineSeries(chart);
-        for (const Data &data : list)
+        for (std::vector<DataAndTime>::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++)
         {
-            series->append(data.first);
-            series2->append(data.first);
+            series->append((*it2).second, (*it2).first);
+            series2->append((*it2).second, (*it2).first);
         }
         series->setName(name + QString::number(nameIndex));
         series2->setName(name + QString::number(nameIndex));
@@ -134,6 +124,24 @@ QChart *MainWindow::createLineChart(DataTable dataTable, int valueMax, int value
     //![4]
 
     return chart;
+}
+
+
+/* DataTable MainWindow::generateDataTable(std::vector<std::vector<DataAndTime>> dateTimeVector)
+{
+    DataTable dataTable;
+
+    for (std::vector<std::vector<DataAndTime>>::iterator it = dateTimeVector.begin(); it != dateTimeVector.end(); it++) {
+        DataList dataList;
+        for (std::vector<DataAndTime>::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++) {
+            QPointF value((*it2).second, (*it2).first);
+            QString label = "Slice ";// + QString::number(i) + ":" + QString::number(j);
+            dataList << Data(value, label);
+        }
+        dataTable << dataList;
+    }
+
+    return dataTable;
 }
 
 QChart *MainWindow::createSplineChart(DataTable dataTable, int valueMax, int valueCount) const
@@ -184,3 +192,4 @@ QChart *MainWindow::createScatterChart(DataTable dataTable, int valueMax, int va
 
     return chart;
 }
+*/
