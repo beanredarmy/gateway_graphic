@@ -28,12 +28,12 @@
 #include <QtCharts/QBarCategoryAxis>
 #include <QtWidgets/QApplication>
 #include <QtCharts/QValueAxis>
-
-QT_BEGIN_NAMESPACE
-class QComboBox;
-class QCheckBox;
-class Ui_ThemeWidgetForm;
-QT_END_NAMESPACE
+#include <QDir>
+//QT_BEGIN_NAMESPACE
+//class QComboBox;
+//class QCheckBox;
+//class Ui_ThemeWidgetForm;
+//QT_END_NAMESPACE
 
 QT_CHARTS_BEGIN_NAMESPACE
 class QChartView;
@@ -63,23 +63,27 @@ class MeasureIndex
 public:
     MeasureIndex();
     ~MeasureIndex();
-
+    void loadDataOfPlace();
 
 private:
     Place *m_place;
-    DateMode m_datemode;
-    QDateTime *m_datetime;
+    DateMode m_dateMode;
+    QDateTime *m_dateTime;
 
     Place *m_place2;
     Place *m_place3;
-    QDateTime *m_datetime2;
-    QDateTime *m_datetime3;
+    QDateTime *m_dateTime2;
+    QDateTime *m_dateTime3;
 
     Theme m_theme;
-    GraphMode m_graphmode;
+    GraphMode m_graphMode;
 
+    QChartView *m_chartView;
 
-
+    float m_currentValue;
+    float m_averageValue;
+    float m_minValue;
+    float m_maxValue;
 
 
 };
