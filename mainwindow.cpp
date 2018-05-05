@@ -9,12 +9,12 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    addDateMode(ui->cmbBox_temp_dateMode);
-    addDateMode(ui->cmbBox_humi_dateMode);
+    //addDateMode(ui->cmbBox_temp_dateMode);
+  //  addDateMode(ui->cmbBox_humi_dateMode);
 
     connectFileToClass(m_placeVector);
-    addPlace(ui->cmbBox_humi_place);
-    addPlace(ui->cmbBox_temp_place);
+  //  addPlace(ui->cmbBox_humi_place);
+  //  addPlace(ui->cmbBox_temp_place);
 
     std::vector<DataAndTime> sample;
     sample.push_back(DataAndTime(4.0,1.0));
@@ -46,12 +46,14 @@ MainWindow::MainWindow(QWidget *parent) :
     QChartView *chartView;
     chartView = new QChartView(createLineChart(asample,10,10));
     chartView->setRenderHint(QPainter::Antialiasing, true);
-    ui->gridLayout_graph_temp->addWidget(chartView);
-     ui->gridLayout_graph_pres->addWidget(chartView);
+ //   ui->gridLayout_graph_temp->addWidget(chartView);
+ //    ui->gridLayout_graph_pres->addWidget(chartView);
      //qDebug() << ui->dateEdit_humi_date;
-     QDateTime *a = new QDateTime(ui->dateEdit_humi_date->dateTime());
-     qDebug() << a->toString();
+   //  QDateTime *a = new QDateTime(ui->dateEdit_humi_date->dateTime());
+    // qDebug() << a->toString();
 
+    DetailWidget *detailWidget = new DetailWidget();
+    ui->tabWidget->addTab(detailWidget,"Chi tiet");
 }
 
 MainWindow::~MainWindow()

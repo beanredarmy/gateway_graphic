@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "place.h"
 #include "measureindex.h"
+#include "detailwidget.h"
 
 
 
