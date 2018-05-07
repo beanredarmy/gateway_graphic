@@ -431,9 +431,7 @@ DetailWidget::DetailWidget(QWidget *parent) : QWidget(parent)
 
     gridLayout_5->addLayout(gridLayout_graph, 1, 0, 1, 1);
 
-
     gridLayout_2->addWidget(frame_content, 0, 0, 1, 1);
-
 
     label_16->setText(QApplication::translate("MainWindow", "\304\220\341\273\222 TH\341\273\212 CH\303\215NH", nullptr));
     label_2->setText(QApplication::translate("MainWindow", "Th\303\264ng s\341\273\221", nullptr));

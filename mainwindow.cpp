@@ -9,12 +9,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    //addDateMode(ui->cmbBox_temp_dateMode);
-  //  addDateMode(ui->cmbBox_humi_dateMode);
-
     connectFileToClass(m_placeVector);
-  //  addPlace(ui->cmbBox_humi_place);
-  //  addPlace(ui->cmbBox_temp_place);
+
 
     std::vector<DataAndTime> sample;
     sample.push_back(DataAndTime(4.0,1.0));
@@ -53,7 +49,28 @@ MainWindow::MainWindow(QWidget *parent) :
     // qDebug() << a->toString();
 
     DetailWidget *detailWidget = new DetailWidget();
-    ui->tabWidget->addTab(detailWidget,"Chi tiet");
+    ui->gridLayout_graph->addWidget(chartView);
+    ui->tabWidget->addTab(detailWidget,"CHI TIẾT");
+
+    QPushButton *tb = new QPushButton();
+    tb->setText("x");
+    tb->setMaximumSize(QSize(20, 20));
+    ui->tabWidget->tabBar()->setTabButton(2,QTabBar::RightSide, tb);
+    ui->tabWidget->tabBar()->setElideMode(Qt::TextElideMode::ElideRight);
+
+    QWidget* pTabCornerWidget = new QWidget(this);
+
+
+
+            QPushButton* pButton = new QPushButton(pTabCornerWidget);
+            pButton->setText("+");
+            pButton->setMaximumSize(QSize(25, 25));
+
+            QHBoxLayout* pHLayout = new QHBoxLayout(pTabCornerWidget);
+            pHLayout->addWidget(pButton);
+
+            ui->tabWidget->setCornerWidget(pTabCornerWidget, Qt::TopRightCorner);
+            ui->tabWidget->setStyleSheet("QTabBar::tab { height: 40px; width: 150px; }");
 }
 
 MainWindow::~MainWindow()

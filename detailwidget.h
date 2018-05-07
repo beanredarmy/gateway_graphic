@@ -23,7 +23,7 @@ signals:
 
 public slots:
 
-private:
+public:
     QGridLayout *gridLayout_2;
     QFrame *frame_option;
     QGridLayout *gridLayout_6;
@@ -89,7 +89,6 @@ private:
     QLabel *label_12;
     QLCDNumber *lcdNumber_maxValue;
     QGridLayout *gridLayout_graph;
-
 
 };
 
