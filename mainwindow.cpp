@@ -11,7 +11,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connectFileToClass(m_placeVector);
 
-
     std::vector<DataAndTime> sample;
     sample.push_back(DataAndTime(4.0,1.0));
     sample.push_back(DataAndTime(3.0,1.5));
