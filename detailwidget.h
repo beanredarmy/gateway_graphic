@@ -11,7 +11,7 @@
 #include <QDateTimeEdit>
 #include <QPushButton>
 #include <QApplication>
-
+#include <QCheckBox>
 
 class DetailWidget : public QWidget
 {
@@ -23,48 +23,54 @@ signals:
 
 public slots:
 
+private:
+
+
 public:
+    QPushButton *pushBtn_exitTab;
+    int m_order;
+
     QGridLayout *gridLayout_2;
     QFrame *frame_option;
     QGridLayout *gridLayout_6;
     QVBoxLayout *verticalLayout_3;
+    QVBoxLayout *verticalLayout_4;
     QLabel *label_16;
-    QHBoxLayout *horizontalLayout_2;
-    QLabel *label_2;
-    QComboBox *cmbBox_index;
+    QCheckBox *checkBox_humi_soil;
+    QCheckBox *checkBox_humi_envi;
+    QCheckBox *checkBox_temp_soil;
+    QCheckBox *checkBox_temp_envi;
     QHBoxLayout *horizontalLayout_6;
     QLabel *label_7;
-    QComboBox *cmbBox_place;
+    QComboBox *cmbBox_device;
     QHBoxLayout *horizontalLayout_13;
     QLabel *label_13;
     QComboBox *cmbBox_dateMode;
     QHBoxLayout *horizontalLayout_7;
     QLabel *label_8;
-    QDateTimeEdit *dateEdit_date;
+    QDateEdit *dateEdit_device1;
     QPushButton *pushButton_OK;
+    QPushButton *pushButton_showData;
     QPushButton *pushButton_viewNow;
     QFrame *line;
     QLabel *label_15;
     QHBoxLayout *horizontalLayout_14;
     QLabel *label_19;
-    QComboBox *cmbBox_place2;
+    QComboBox *cmbBox_device2;
     QHBoxLayout *horizontalLayout_15;
     QLabel *label_17;
-    QDateTimeEdit *dateEdit_date2;
+    QDateEdit *dateEdit_device2;
     QHBoxLayout *horizontalLayout_18;
     QLabel *label_20;
-    QComboBox *cmbBox_place3;
+    QComboBox *cmbBox_device3;
     QHBoxLayout *horizontalLayout_16;
     QLabel *label_18;
-    QDateTimeEdit *dateEdit_date3;
+    QDateEdit *dateEdit_device3;
     QHBoxLayout *horizontalLayout_17;
     QPushButton *pushBtn_compare;
     QPushButton *pushBtn_notCompare;
     QFrame *line_2;
     QLabel *label_21;
-    QHBoxLayout *horizontalLayout_19;
-    QLabel *label_22;
-    QSlider *horizontalSlider;
     QHBoxLayout *horizontalLayout_12;
     QLabel *label_14;
     QComboBox *cmbBox_graphMode;

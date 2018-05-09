@@ -5,7 +5,6 @@
 #include <vector>
 #include <place.h>
 
-void connectFileToClass(std::vector<Place *> &placeVector);
 
 int main(int argc, char *argv[])
 {

@@ -36,40 +36,19 @@ MainWindow::MainWindow(QWidget *parent) :
     asample.push_back(sample2);
 
 
-   // Place *vietnam = new Place("Viet Nam");
-    //vietnam->setHour_temp(sample);
     QChartView *chartView;
     chartView = new QChartView(createLineChart(asample,10,10));
     chartView->setRenderHint(QPainter::Antialiasing, true);
- //   ui->gridLayout_graph_temp->addWidget(chartView);
- //    ui->gridLayout_graph_pres->addWidget(chartView);
-     //qDebug() << ui->dateEdit_humi_date;
-   //  QDateTime *a = new QDateTime(ui->dateEdit_humi_date->dateTime());
-    // qDebug() << a->toString();
-
-    DetailWidget *detailWidget = new DetailWidget();
     ui->gridLayout_graph->addWidget(chartView);
-    ui->tabWidget->addTab(detailWidget,"CHI TIẾT");
 
-    QPushButton *tb = new QPushButton();
-    tb->setText("x");
-    tb->setMaximumSize(QSize(20, 20));
-    ui->tabWidget->tabBar()->setTabButton(2,QTabBar::RightSide, tb);
+
+
+
+    createAddTabButton();
+
     ui->tabWidget->tabBar()->setElideMode(Qt::TextElideMode::ElideRight);
-
-    QWidget* pTabCornerWidget = new QWidget(this);
-
-
-
-            QPushButton* pButton = new QPushButton(pTabCornerWidget);
-            pButton->setText("+");
-            pButton->setMaximumSize(QSize(25, 25));
-
-            QHBoxLayout* pHLayout = new QHBoxLayout(pTabCornerWidget);
-            pHLayout->addWidget(pButton);
-
-            ui->tabWidget->setCornerWidget(pTabCornerWidget, Qt::TopRightCorner);
-            ui->tabWidget->setStyleSheet("QTabBar::tab { height: 40px; width: 150px; }");
+    ui->tabWidget->setStyleSheet("QTabBar::tab { height: 40px; width: 150px; }");
+    connect(m_addTabButton, SIGNAL (clicked()),this, SLOT (createTab()));
 }
 
 MainWindow::~MainWindow()
@@ -148,8 +127,6 @@ QChart *MainWindow::createLineChart(std::vector<std::vector<DataAndTime>> dateTi
     return chart;
 }
 
-
-
 QChart *MainWindow::createSplineChart(std::vector<std::vector<DataAndTime>> dateTimeVector, int valueMax, int valueCount) const
 {
     //![1]
@@ -226,20 +203,27 @@ QChart *MainWindow::createScatterChart(std::vector<std::vector<DataAndTime>> dat
     return chart;
 }
 
-//DataTable MainWindow::generateDataTable(std::vector<std::vector<DataAndTime>> dateTimeVector)
-//{
-//    DataTable dataTable;
+void MainWindow::createTab()
+{
+    DetailWidget *detailWidget = new DetailWidget();
+    detailWidget->m_order = m_dtWidgetVector.size();
+    m_dtWidgetVector.push_back(detailWidget);
+    ui->tabWidget->addTab(detailWidget,QString("CHI TIẾT %1").arg(detailWidget->m_order+2));
 
-//    for (std::vector<std::vector<DataAndTime>>::iterator it = dateTimeVector.begin(); it != dateTimeVector.end(); it++) {
-//        DataList dataList;
-//        for (std::vector<DataAndTime>::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++) {
-//            QPointF value((*it2).second, (*it2).first);
-//            QString label = "Slice ";// + QString::number(i) + ":" + QString::number(j);
-//            dataList << Data(value, label);
-//        }
-//        dataTable << dataList;
-//    }
+    detailWidget->pushBtn_exitTab = new QPushButton("x");
+    detailWidget->pushBtn_exitTab->setMaximumSize(QSize(20, 20));
+    ui->tabWidget->tabBar()->setTabButton(1+m_dtWidgetVector.size(),QTabBar::RightSide, detailWidget->pushBtn_exitTab);
 
-//    return dataTable;
-//}
+}
+
+void MainWindow::createAddTabButton()
+{
+    QWidget* pTabCornerWidget = new QWidget(this);
+    m_addTabButton = new QPushButton("+",pTabCornerWidget);
+    m_addTabButton->setMaximumSize(QSize(25, 25));
+    QHBoxLayout* pHLayout = new QHBoxLayout(pTabCornerWidget);
+    pHLayout->addWidget(m_addTabButton);
+    ui->tabWidget->setCornerWidget(pTabCornerWidget, Qt::TopRightCorner);
+}
+
 

@@ -23,16 +23,19 @@ public:
     QChart *createSplineChart(std::vector<std::vector<DataAndTime>> dateTimeVector, int valueMax, int valueCount) const;      //Tao bieu do duong cong
     QChart *createScatterChart(std::vector<std::vector<DataAndTime>> dateTimeVector, int valueMax, int valueCount) const;     //Tao bieu do cham
 
+    void createAddTabButton();
     void addDateMode(QComboBox *cmbBox_dateMode);
     void addPlace(QComboBox *cmbBox_place);
     void connectFileToClass(std::vector<Place*> &placeVector);
 
+public slots:
+    void createTab();
 private:
+    std::vector<DetailWidget*> m_dtWidgetVector;
     std::vector<Place*> m_placeVector;
     Ui::MainWindow *ui;
-    MeasureIndex *m_tempIndex;
-    MeasureIndex *m_humiIndex;
-    MeasureIndex *m_pressIndex;
+
+    QPushButton* m_addTabButton;
 
 };
 
