@@ -54,6 +54,8 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete m_addTabButton;
+
 }
 
 
@@ -86,6 +88,7 @@ void MainWindow::connectFileToClass(std::vector<Place *> &placeVector)
         }
     }
 }
+
 
 QChart *MainWindow::createLineChart(std::vector<std::vector<DataAndTime>> dateTimeVector, int valueMax, int valueCount) const
 {
@@ -213,14 +216,23 @@ void MainWindow::createTab()
     detailWidget->pushBtn_exitTab = new QPushButton("x");
     detailWidget->pushBtn_exitTab->setMaximumSize(QSize(20, 20));
     ui->tabWidget->tabBar()->setTabButton(1+m_dtWidgetVector.size(),QTabBar::RightSide, detailWidget->pushBtn_exitTab);
+   // connect(detailWidget->pushBtn_exitTab, SIGNAL (clicked()),this, SLOT (removeTab()));
+    //Can tiep tuc o day
 
 }
+
+void MainWindow::removeTab(int tabOrder)
+{
+
+}
+
 
 void MainWindow::createAddTabButton()
 {
     QWidget* pTabCornerWidget = new QWidget(this);
     m_addTabButton = new QPushButton("+",pTabCornerWidget);
     m_addTabButton->setMaximumSize(QSize(25, 25));
+
     QHBoxLayout* pHLayout = new QHBoxLayout(pTabCornerWidget);
     pHLayout->addWidget(m_addTabButton);
     ui->tabWidget->setCornerWidget(pTabCornerWidget, Qt::TopRightCorner);

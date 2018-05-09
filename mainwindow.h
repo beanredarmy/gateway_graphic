@@ -28,14 +28,19 @@ public:
     void addPlace(QComboBox *cmbBox_place);
     void connectFileToClass(std::vector<Place*> &placeVector);
 
+
 public slots:
+    void removeTab(int tabOrder);
     void createTab();
 private:
     std::vector<DetailWidget*> m_dtWidgetVector;
     std::vector<Place*> m_placeVector;
     Ui::MainWindow *ui;
 
+
+
     QPushButton* m_addTabButton;
+
 
 };
 

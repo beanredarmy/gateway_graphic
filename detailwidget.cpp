@@ -3,6 +3,9 @@
 DetailWidget::DetailWidget(QWidget *parent) : QWidget(parent)
 {
 
+
+
+
     gridLayout_2 = new QGridLayout(this);
     gridLayout_2->setSpacing(6);
     gridLayout_2->setContentsMargins(11, 11, 11, 11);
