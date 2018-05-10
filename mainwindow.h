@@ -40,8 +40,6 @@ private:
 
 
     QPushButton* m_addTabButton;
-
-
 };
 
 #endif // MAINWINDOW_H

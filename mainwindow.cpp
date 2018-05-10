@@ -43,19 +43,18 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
 
-
     createAddTabButton();
-
+    ui->tabWidget->setTabsClosable(true);
     ui->tabWidget->tabBar()->setElideMode(Qt::TextElideMode::ElideRight);
     ui->tabWidget->setStyleSheet("QTabBar::tab { height: 40px; width: 150px; }");
     connect(m_addTabButton, SIGNAL (clicked()),this, SLOT (createTab()));
+    connect(ui->tabWidget,SIGNAL(tabCloseRequested(int)),this,SLOT(removeTab(int)));
+
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete m_addTabButton;
-
 }
 
 
@@ -213,16 +212,16 @@ void MainWindow::createTab()
     m_dtWidgetVector.push_back(detailWidget);
     ui->tabWidget->addTab(detailWidget,QString("CHI TIẾT %1").arg(detailWidget->m_order+2));
 
-    detailWidget->pushBtn_exitTab = new QPushButton("x");
-    detailWidget->pushBtn_exitTab->setMaximumSize(QSize(20, 20));
-    ui->tabWidget->tabBar()->setTabButton(1+m_dtWidgetVector.size(),QTabBar::RightSide, detailWidget->pushBtn_exitTab);
-   // connect(detailWidget->pushBtn_exitTab, SIGNAL (clicked()),this, SLOT (removeTab()));
-    //Can tiep tuc o day
-
 }
 
 void MainWindow::removeTab(int tabOrder)
 {
+    if(tabOrder > 1)
+    {
+        delete ui->tabWidget->widget(tabOrder);
+        m_dtWidgetVector.erase(m_dtWidgetVector.begin() + tabOrder-2);
+        qDebug() << m_dtWidgetVector.size();
+    } else qDebug() << "Khong the dong tab nay";
 
 }
 

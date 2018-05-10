@@ -18,7 +18,7 @@ class DetailWidget : public QWidget
     Q_OBJECT
 public:
     explicit DetailWidget(QWidget *parent = nullptr);
-
+    ~DetailWidget();
 signals:
 
 public slots:

@@ -498,3 +498,8 @@ DetailWidget::DetailWidget(QWidget *parent) : QWidget(parent)
     label_11->setText(QApplication::translate("MainWindow", "Min/Max", nullptr));
     label_12->setText(QApplication::translate("MainWindow", "/", nullptr));
 }
+
+DetailWidget::~DetailWidget()
+{
+
+}
