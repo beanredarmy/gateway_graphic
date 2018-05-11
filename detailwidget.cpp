@@ -2,9 +2,25 @@
 
 DetailWidget::DetailWidget(QWidget *parent) : QWidget(parent)
 {
+    setupWidgets();
+    connect(pushButton_OK, SIGNAL (clicked()),this, SLOT (drawChart()));
+    connect(pushButton_showData, SIGNAL (clicked()),this, SLOT (viewFileData()));
+}
 
 
 
+DetailWidget::~DetailWidget()
+{
+    delete gridLayout_2;
+    delete frame_option;
+    delete frame_content;
+    qDebug() << QString("huy %1").arg(m_order);
+}
+
+void DetailWidget::setupWidgets()
+{
+    m_chartView = new QChartView();
+    m_chartView->setRenderHint(QPainter::Antialiasing, true);
 
     gridLayout_2 = new QGridLayout(this);
     gridLayout_2->setSpacing(6);
@@ -497,9 +513,198 @@ DetailWidget::DetailWidget(QWidget *parent) : QWidget(parent)
     label_10->setText(QApplication::translate("MainWindow", "Trung b\303\254nh", nullptr));
     label_11->setText(QApplication::translate("MainWindow", "Min/Max", nullptr));
     label_12->setText(QApplication::translate("MainWindow", "/", nullptr));
+
+    gridLayout_graph->addWidget(m_chartView);
 }
 
-DetailWidget::~DetailWidget()
+QChart *DetailWidget::createLineChart(std::vector<std::vector<DataAndTime>> dateTimeVector, int valueMax, int valueCount) const
+{
+    //![1]
+    QChart *chart = new QChart();
+    chart->setTitle("Line chart");
+    //![1]
+
+    //![2]
+    QString name("Series ");
+    int nameIndex = 0;
+    for (std::vector<std::vector<DataAndTime>>::iterator it = dateTimeVector.begin(); it != dateTimeVector.end(); it++)  {
+        QScatterSeries *series2 = new QScatterSeries(chart);
+        series2->setMarkerSize(5.0);
+        QLineSeries *series = new QLineSeries(chart);
+        for (std::vector<DataAndTime>::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++)
+        {
+            series->append((*it2).second, (*it2).first);
+            series2->append((*it2).second, (*it2).first);
+        }
+        series->setName(name + QString::number(nameIndex));
+        series2->setName(name + QString::number(nameIndex));
+        nameIndex++;
+        chart->addSeries(series);
+        chart->addSeries(series2);
+    }
+    //![2]
+
+    //![3]
+    chart->createDefaultAxes();
+    chart->axisX()->setRange(0, valueMax);
+    chart->axisY()->setRange(0, valueCount);
+    //![3]
+    //![4]
+    // Add space to label to add space between labels and axis
+    static_cast<QValueAxis *>(chart->axisY())->setLabelFormat("%.1f  ");
+    //![4]
+
+    return chart;
+}
+
+QChart *DetailWidget::createSplineChart(std::vector<std::vector<DataAndTime>> dateTimeVector, int valueMax, int valueCount) const
+{
+    //![1]
+    QChart *chart = new QChart();
+    chart->setTitle("Line chart");
+    //![1]
+
+    //![2]
+    QString name("Series ");
+    int nameIndex = 0;
+    for (std::vector<std::vector<DataAndTime>>::iterator it = dateTimeVector.begin(); it != dateTimeVector.end(); it++)  {
+        QScatterSeries *series2 = new QScatterSeries(chart);
+        series2->setMarkerSize(5.0);
+        QSplineSeries *series = new QSplineSeries(chart);
+        for (std::vector<DataAndTime>::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++)
+        {
+            series->append((*it2).second, (*it2).first);
+            series2->append((*it2).second, (*it2).first);
+        }
+        series->setName(name + QString::number(nameIndex));
+        series2->setName(name + QString::number(nameIndex));
+        nameIndex++;
+        chart->addSeries(series);
+        chart->addSeries(series2);
+    }
+    //![2]
+
+    //![3]
+    chart->createDefaultAxes();
+    chart->axisX()->setRange(0, valueMax);
+    chart->axisY()->setRange(0, valueCount);
+    //![3]
+    //![4]
+    // Add space to label to add space between labels and axis
+    static_cast<QValueAxis *>(chart->axisY())->setLabelFormat("%.1f  ");
+    //![4]
+
+    return chart;
+}
+
+QChart *DetailWidget::createScatterChart(std::vector<std::vector<DataAndTime>> dateTimeVector, int valueMax, int valueCount) const
+{
+    //![1]
+    QChart *chart = new QChart();
+    chart->setTitle("Line chart");
+    //![1]
+
+    //![2]
+    QString name("Series ");
+    int nameIndex = 0;
+    for (std::vector<std::vector<DataAndTime>>::iterator it = dateTimeVector.begin(); it != dateTimeVector.end(); it++)  {
+        QScatterSeries *series2 = new QScatterSeries(chart);
+        series2->setMarkerSize(10.0);
+        for (std::vector<DataAndTime>::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++)
+        {
+            series2->append((*it2).second, (*it2).first);
+        }
+        series2->setName(name + QString::number(nameIndex));
+        nameIndex++;
+        chart->addSeries(series2);
+    }
+    //![2]
+
+    //![3]
+    chart->createDefaultAxes();
+    chart->axisX()->setRange(0, valueMax);
+    chart->axisY()->setRange(0, valueCount);
+    //![3]
+    //![4]
+    // Add space to label to add space between labels and axis
+    static_cast<QValueAxis *>(chart->axisY())->setLabelFormat("%.1f  ");
+    //![4]
+
+    return chart;
+}
+
+void DetailWidget::drawChart()
+{
+    std::vector<DataAndTime> sample;
+    sample.push_back(DataAndTime(4.0,1.0));
+    sample.push_back(DataAndTime(3.0,1.5));
+    sample.push_back(DataAndTime(2.5,2.5));
+    sample.push_back(DataAndTime(1.0,3.0));
+    sample.push_back(DataAndTime(4.0,4.5));
+    sample.push_back(DataAndTime(5.5,5.5));
+    sample.push_back(DataAndTime(6.0,6.0));
+    sample.push_back(DataAndTime(8.0,7.5));
+    sample.push_back(DataAndTime(9.0,9.5));
+    std::vector<DataAndTime> sample2;
+    sample2.push_back(DataAndTime(6.0,0.5));
+    sample2.push_back(DataAndTime(2.0,2.0));
+    sample2.push_back(DataAndTime(3.5,2.2));
+    sample2.push_back(DataAndTime(4.0,3.0));
+    sample2.push_back(DataAndTime(6.0,4.0));
+    sample2.push_back(DataAndTime(6.5,5.0));
+    sample2.push_back(DataAndTime(8.0,6.5));
+    sample2.push_back(DataAndTime(8.0,7.0));
+    sample2.push_back(DataAndTime(7.0,10));
+    std::vector<std::vector<DataAndTime>> asample;
+    asample.push_back(sample);
+    asample.push_back(sample2);
+
+    m_chartView->chart()->deleteLater();
+    m_chartView->setChart(createLineChart(asample,10,10));
+
+
+}
+
+void DetailWidget::viewFileData()
+{
+    std::vector<DataAndTime> sample;
+    sample.push_back(DataAndTime(8.0,1.0));
+    sample.push_back(DataAndTime(5.0,1.5));
+    sample.push_back(DataAndTime(6.5,2.5));
+    sample.push_back(DataAndTime(8.0,3.0));
+    sample.push_back(DataAndTime(6.0,4.5));
+    sample.push_back(DataAndTime(2.5,5.5));
+    sample.push_back(DataAndTime(4.0,6.0));
+    sample.push_back(DataAndTime(3.0,7.5));
+    sample.push_back(DataAndTime(1.0,9.5));
+    std::vector<DataAndTime> sample2;
+    sample2.push_back(DataAndTime(3.0,0.5));
+    sample2.push_back(DataAndTime(7.0,2.0));
+    sample2.push_back(DataAndTime(6.5,2.2));
+    sample2.push_back(DataAndTime(5.0,3.0));
+    sample2.push_back(DataAndTime(6.0,4.0));
+    sample2.push_back(DataAndTime(7.5,5.0));
+    sample2.push_back(DataAndTime(9.0,6.5));
+    sample2.push_back(DataAndTime(8.0,7.0));
+    sample2.push_back(DataAndTime(7.0,10));
+    std::vector<std::vector<DataAndTime>> asample;
+    asample.push_back(sample);
+    asample.push_back(sample2);
+    m_chartView->chart()->deleteLater();
+    m_chartView->setChart(createLineChart(asample,10,10));
+}
+
+void DetailWidget::showPresentData()
+{
+
+}
+
+void DetailWidget::compareData()
+{
+
+}
+
+void DetailWidget::hideComparison()
 {
 
 }

@@ -11,38 +11,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connectFileToClass(m_placeVector);
 
-    std::vector<DataAndTime> sample;
-    sample.push_back(DataAndTime(4.0,1.0));
-    sample.push_back(DataAndTime(3.0,1.5));
-    sample.push_back(DataAndTime(2.5,2.5));
-    sample.push_back(DataAndTime(1.0,3.0));
-    sample.push_back(DataAndTime(4.0,4.5));
-    sample.push_back(DataAndTime(5.5,5.5));
-    sample.push_back(DataAndTime(6.0,6.0));
-    sample.push_back(DataAndTime(8.0,7.5));
-    sample.push_back(DataAndTime(9.0,9.5));
-    std::vector<DataAndTime> sample2;
-    sample2.push_back(DataAndTime(6.0,0.5));
-    sample2.push_back(DataAndTime(2.0,2.0));
-    sample2.push_back(DataAndTime(3.5,2.2));
-    sample2.push_back(DataAndTime(4.0,3.0));
-    sample2.push_back(DataAndTime(6.0,4.0));
-    sample2.push_back(DataAndTime(6.5,5.0));
-    sample2.push_back(DataAndTime(8.0,6.5));
-    sample2.push_back(DataAndTime(8.0,7.0));
-    sample2.push_back(DataAndTime(7.0,10));
-    std::vector<std::vector<DataAndTime>> asample;
-    asample.push_back(sample);
-    asample.push_back(sample2);
-
-
-    QChartView *chartView;
-    chartView = new QChartView(createLineChart(asample,10,10));
-    chartView->setRenderHint(QPainter::Antialiasing, true);
-    ui->gridLayout_graph->addWidget(chartView);
-
-
-
     createAddTabButton();
     ui->tabWidget->setTabsClosable(true);
     ui->tabWidget->tabBar()->setElideMode(Qt::TextElideMode::ElideRight);
@@ -207,11 +175,13 @@ QChart *MainWindow::createScatterChart(std::vector<std::vector<DataAndTime>> dat
 
 void MainWindow::createTab()
 {
-    DetailWidget *detailWidget = new DetailWidget();
-    detailWidget->m_order = m_dtWidgetVector.size();
-    m_dtWidgetVector.push_back(detailWidget);
-    ui->tabWidget->addTab(detailWidget,QString("CHI TIẾT %1").arg(detailWidget->m_order+2));
-
+    DetailWidget *detailWidget = new DetailWidget(this);
+    //detailWidget->m_order = m_dtWidgetVector.size();
+    //m_dtWidgetVector.push_back(detailWidget);
+   // ui->tabWidget->addTab(detailWidget,QString("CHI TIẾT %1").arg(detailWidget->m_order+2));
+    detailWidget->m_order = ui->tabWidget->count();
+    ui->tabWidget->addTab(detailWidget,QString("CHI TIẾT %1").arg(detailWidget->m_order));
+    ui->tabWidget->setCurrentIndex(detailWidget->m_order);
 }
 
 void MainWindow::removeTab(int tabOrder)
@@ -219,7 +189,7 @@ void MainWindow::removeTab(int tabOrder)
     if(tabOrder > 1)
     {
         delete ui->tabWidget->widget(tabOrder);
-        m_dtWidgetVector.erase(m_dtWidgetVector.begin() + tabOrder-2);
+      //  m_dtWidgetVector.erase(m_dtWidgetVector.begin() + tabOrder-2);
         qDebug() << m_dtWidgetVector.size();
     } else qDebug() << "Khong the dong tab nay";
 

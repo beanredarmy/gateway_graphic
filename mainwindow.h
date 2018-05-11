@@ -37,8 +37,6 @@ private:
     std::vector<Place*> m_placeVector;
     Ui::MainWindow *ui;
 
-
-
     QPushButton* m_addTabButton;
 };
 

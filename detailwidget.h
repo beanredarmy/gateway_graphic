@@ -12,22 +12,32 @@
 #include <QPushButton>
 #include <QApplication>
 #include <QCheckBox>
-
+#include <QDebug>
+#include "measureindex.h"
 class DetailWidget : public QWidget
 {
     Q_OBJECT
 public:
     explicit DetailWidget(QWidget *parent = nullptr);
     ~DetailWidget();
+
+    void setupWidgets();
+    QChart *createLineChart(std::vector<std::vector<DataAndTime>> dateTimeVector, int valueMax, int valueCount) const;        //Tao bieu do duong thang
+    QChart *createSplineChart(std::vector<std::vector<DataAndTime>> dateTimeVector, int valueMax, int valueCount) const;      //Tao bieu do duong cong
+    QChart *createScatterChart(std::vector<std::vector<DataAndTime>> dateTimeVector, int valueMax, int valueCount) const;     //Tao bieu do cham
+
 signals:
 
 public slots:
-
+    void drawChart();
+    void viewFileData();
+    void showPresentData();
+    void compareData();
+    void hideComparison();
 private:
-
+    QChartView *m_chartView;
 
 public:
-    QPushButton *pushBtn_exitTab;
     int m_order;
 
     QGridLayout *gridLayout_2;
