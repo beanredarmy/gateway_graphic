@@ -525,7 +525,9 @@ void DetailWidget::setupOptions()
     cmbBox_device->addItems(m_deviceList);
     cmbBox_device2->addItems(m_deviceList);
     cmbBox_device3->addItems(m_deviceList);
-
+    dateEdit_device1->setDate(QDate::currentDate());
+    dateEdit_device2->setDate(QDate::currentDate());
+    dateEdit_device3->setDate(QDate::currentDate());
 }
 
 QChart *DetailWidget::createLineChart(std::vector<std::vector<DataAndTime>> dateTimeVector, int valueMax, int valueCount) const
@@ -552,6 +554,10 @@ QChart *DetailWidget::createLineChart(std::vector<std::vector<DataAndTime>> date
         nameIndex++;
         chart->addSeries(series);
         chart->addSeries(series2);
+
+        connect(series, &QSplineSeries::hovered, this, &DetailWidget::tooltip);
+        connect(series2, &QSplineSeries::hovered, this, &DetailWidget::tooltip);
+
     }
     //![2]
 
@@ -564,14 +570,11 @@ QChart *DetailWidget::createLineChart(std::vector<std::vector<DataAndTime>> date
     chart->axisY()->setTitleText("Độ ẩm (%)");
     chart->axisY()->setTitleFont(QFont("Calibri", 12, QFont::Bold));
 
-
     QValueAxis *axisTemp = new QValueAxis();
     axisTemp->setRange(0,6);
     axisTemp->setTitleText("Nhiệt độ (độ C)");
     axisTemp->setTitleFont(QFont("Calibri", 12, QFont::Bold));
     chart->addAxis(axisTemp,Qt::AlignRight);
-
-
 
 
     //![3]
@@ -663,7 +666,7 @@ QChart *DetailWidget::createScatterChart(std::vector<std::vector<DataAndTime>> d
 
 void DetailWidget::drawChart()
 {
-
+    m_tooltip = 0;
     std::vector<DataAndTime> sample;
     sample.push_back(DataAndTime(4.0,1.0));
     sample.push_back(DataAndTime(3.0,1.5));
@@ -691,11 +694,11 @@ void DetailWidget::drawChart()
     m_chartView->chart()->deleteLater();
     m_chartView->setChart(createLineChart(asample,10,10));
 
-
 }
 
 void DetailWidget::viewFileData()
 {
+    m_tooltip = 0;
     std::vector<DataAndTime> sample;
     sample.push_back(DataAndTime(8.0,1.0));
     sample.push_back(DataAndTime(5.0,1.5));
@@ -736,4 +739,21 @@ void DetailWidget::compareData()
 void DetailWidget::hideComparison()
 {
 
+}
+
+void DetailWidget::tooltip(QPointF point, bool state)
+{
+    qDebug() << "Hover";
+    if (m_tooltip == 0)
+        m_tooltip = new Callout(m_chartView->chart());
+
+    if (state) {
+        m_tooltip->setText(QString("X: %1 \nY: %2 ").arg(point.x()).arg(point.y()));
+        m_tooltip->setAnchor(point);
+        m_tooltip->setZValue(11);
+        m_tooltip->updateGeometry();
+        m_tooltip->show();
+    } else {
+        m_tooltip->hide();
+    }
 }

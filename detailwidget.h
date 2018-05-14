@@ -14,7 +14,9 @@
 #include <QCheckBox>
 #include <QDebug>
 #include <QCategoryAxis>
+#include <QtWidgets/QGraphicsTextItem>
 #include "measureindex.h"
+#include "callout.h"
 
 typedef QPair<float ,float> DataAndTime;
 class DetailWidget : public QWidget
@@ -38,9 +40,10 @@ public slots:
     void showPresentData();
     void compareData();
     void hideComparison();
+    void tooltip(QPointF point, bool state);
 private:
     QChartView *m_chartView;
-
+    Callout *m_tooltip;
 public:
     static QStringList  m_deviceList;
     int m_order;

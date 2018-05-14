@@ -27,12 +27,14 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     measureindex.cpp \
-    detailwidget.cpp
+    detailwidget.cpp \
+    callout.cpp
 
 HEADERS += \
         mainwindow.h \
     measureindex.h \
-    detailwidget.h
+    detailwidget.h \
+    callout.h
 
 FORMS += \
         mainwindow.ui
