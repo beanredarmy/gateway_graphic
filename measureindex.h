@@ -1,6 +1,6 @@
 #ifndef MEASUREINDEX_H
 #define MEASUREINDEX_H
-#include <place.h>
+
 #include <QtWidgets/QWidget>
 #include <QtCharts/QChartGlobal>
 #include <QtCharts/QChartView>
@@ -66,14 +66,9 @@ public:
     void loadDataOfPlace();
 
 private:
-    Place *m_place;
-    DateMode m_dateMode;
-    QDateTime *m_dateTime;
 
-    Place *m_place2;
-    Place *m_place3;
-    QDateTime *m_dateTime2;
-    QDateTime *m_dateTime3;
+    DateMode m_dateMode;
+
 
     Theme m_theme;
     GraphMode m_graphMode;

@@ -1,13 +1,13 @@
 #include "detailwidget.h"
 
+QStringList  DetailWidget::m_deviceList;
 DetailWidget::DetailWidget(QWidget *parent) : QWidget(parent)
 {
     setupWidgets();
+    setupOptions();
     connect(pushButton_OK, SIGNAL (clicked()),this, SLOT (drawChart()));
     connect(pushButton_showData, SIGNAL (clicked()),this, SLOT (viewFileData()));
 }
-
-
 
 DetailWidget::~DetailWidget()
 {
@@ -517,6 +517,17 @@ void DetailWidget::setupWidgets()
     gridLayout_graph->addWidget(m_chartView);
 }
 
+void DetailWidget::setupOptions()
+{
+    cmbBox_dateMode->addItems(QStringList() << "Ngày" << "7 Ngày" << "Tháng");
+    cmbBox_graphMode->addItems(QStringList() << "Line" << "Spline" << "Scatter");
+    cmbBox_theme->addItems(QStringList() << "Light" << "Dark");
+    cmbBox_device->addItems(m_deviceList);
+    cmbBox_device2->addItems(m_deviceList);
+    cmbBox_device3->addItems(m_deviceList);
+
+}
+
 QChart *DetailWidget::createLineChart(std::vector<std::vector<DataAndTime>> dateTimeVector, int valueMax, int valueCount) const
 {
     //![1]
@@ -548,13 +559,30 @@ QChart *DetailWidget::createLineChart(std::vector<std::vector<DataAndTime>> date
     chart->createDefaultAxes();
     chart->axisX()->setRange(0, valueMax);
     chart->axisY()->setRange(0, valueCount);
+    chart->axisX()->setTitleText("Thời gian");
+    chart->axisX()->setTitleFont(QFont("Calibri", 12, QFont::Bold));
+    chart->axisY()->setTitleText("Độ ẩm (%)");
+    chart->axisY()->setTitleFont(QFont("Calibri", 12, QFont::Bold));
+
+
+    QValueAxis *axisTemp = new QValueAxis();
+    axisTemp->setRange(0,6);
+    axisTemp->setTitleText("Nhiệt độ (độ C)");
+    axisTemp->setTitleFont(QFont("Calibri", 12, QFont::Bold));
+    chart->addAxis(axisTemp,Qt::AlignRight);
+
+
+
+
     //![3]
     //![4]
     // Add space to label to add space between labels and axis
     static_cast<QValueAxis *>(chart->axisY())->setLabelFormat("%.1f  ");
     //![4]
+    //!
 
     return chart;
+
 }
 
 QChart *DetailWidget::createSplineChart(std::vector<std::vector<DataAndTime>> dateTimeVector, int valueMax, int valueCount) const
@@ -635,6 +663,7 @@ QChart *DetailWidget::createScatterChart(std::vector<std::vector<DataAndTime>> d
 
 void DetailWidget::drawChart()
 {
+
     std::vector<DataAndTime> sample;
     sample.push_back(DataAndTime(4.0,1.0));
     sample.push_back(DataAndTime(3.0,1.5));

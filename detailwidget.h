@@ -13,7 +13,10 @@
 #include <QApplication>
 #include <QCheckBox>
 #include <QDebug>
+#include <QCategoryAxis>
 #include "measureindex.h"
+
+typedef QPair<float ,float> DataAndTime;
 class DetailWidget : public QWidget
 {
     Q_OBJECT
@@ -22,6 +25,7 @@ public:
     ~DetailWidget();
 
     void setupWidgets();
+    void setupOptions();
     QChart *createLineChart(std::vector<std::vector<DataAndTime>> dateTimeVector, int valueMax, int valueCount) const;        //Tao bieu do duong thang
     QChart *createSplineChart(std::vector<std::vector<DataAndTime>> dateTimeVector, int valueMax, int valueCount) const;      //Tao bieu do duong cong
     QChart *createScatterChart(std::vector<std::vector<DataAndTime>> dateTimeVector, int valueMax, int valueCount) const;     //Tao bieu do cham
@@ -38,6 +42,7 @@ private:
     QChartView *m_chartView;
 
 public:
+    static QStringList  m_deviceList;
     int m_order;
 
     QGridLayout *gridLayout_2;
@@ -105,7 +110,6 @@ public:
     QLabel *label_12;
     QLCDNumber *lcdNumber_maxValue;
     QGridLayout *gridLayout_graph;
-
 };
 
 #endif // DETAILWIDGET_H

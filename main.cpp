@@ -2,9 +2,6 @@
 #include <QApplication>
 #include <QDebug>
 #include <QDir>
-#include <vector>
-#include <place.h>
-
 
 int main(int argc, char *argv[])
 {
@@ -15,10 +12,4 @@ int main(int argc, char *argv[])
     return a.exec();
 }
 
-
-
-void updateDataFromFile()
-{
-
-}
 
