@@ -30,13 +30,21 @@ void MainWindow::connectFileToClass()
 {
     QDir mDir("/home/bean/gatewaydata");
     DetailWidget::m_deviceList << "Chọn thiết bị";
-    foreach(QFileInfo mItm, mDir.entryInfoList())
+    for(int i=0; i<mDir.entryInfoList().count(); ++i )
+    {
+        if(mDir.entryInfoList()[i].fileName() != "." && mDir.entryInfoList()[i].fileName() != ".."  && mDir.entryInfoList()[i].isDir())
+        {
+            DetailWidget::m_deviceList << mDir.entryInfoList()[i].fileName();
+        }
+    }
+   /* foreach(QFileInfo mItm, mDir.entryInfoList())
     {
         if(mItm.fileName() != "." && mItm.fileName() != "..")
         {
             DetailWidget::m_deviceList << mItm.fileName();
         }
     }
+    */
 }
 
 void MainWindow::createTab()

@@ -41,9 +41,12 @@ public slots:
     void compareData();
     void hideComparison();
     void tooltip(QPointF point, bool state);
+    void changeTheme(int index);
 private:
     QChartView *m_chartView;
     Callout *m_tooltip;
+    QChart::ChartTheme m_charTheme;
+
 public:
     static QStringList  m_deviceList;
     int m_order;

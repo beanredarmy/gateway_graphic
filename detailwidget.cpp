@@ -7,6 +7,7 @@ DetailWidget::DetailWidget(QWidget *parent) : QWidget(parent)
     setupOptions();
     connect(pushButton_OK, SIGNAL (clicked()),this, SLOT (drawChart()));
     connect(pushButton_showData, SIGNAL (clicked()),this, SLOT (viewFileData()));
+
 }
 
 DetailWidget::~DetailWidget()
@@ -521,7 +522,8 @@ void DetailWidget::setupOptions()
 {
     cmbBox_dateMode->addItems(QStringList() << "Ngày" << "7 Ngày" << "Tháng");
     cmbBox_graphMode->addItems(QStringList() << "Line" << "Spline" << "Scatter");
-    cmbBox_theme->addItems(QStringList() << "Light" << "Dark");
+    cmbBox_theme->addItems(QStringList() << "Light" << "Dark" << "Blue Cerulean" << "Brown Sand" << "Blue NCS" << "High Contrast" << "Blue Icy" << "Qt");
+    connect(cmbBox_theme, SIGNAL (currentIndexChanged(int)),this, SLOT (changeTheme(int)));
     cmbBox_device->addItems(m_deviceList);
     cmbBox_device2->addItems(m_deviceList);
     cmbBox_device3->addItems(m_deviceList);
@@ -575,7 +577,6 @@ QChart *DetailWidget::createLineChart(std::vector<std::vector<DataAndTime>> date
     axisTemp->setTitleText("Nhiệt độ (độ C)");
     axisTemp->setTitleFont(QFont("Calibri", 12, QFont::Bold));
     chart->addAxis(axisTemp,Qt::AlignRight);
-
 
     //![3]
     //![4]
@@ -692,7 +693,8 @@ void DetailWidget::drawChart()
     asample.push_back(sample2);
 
     m_chartView->chart()->deleteLater();
-    m_chartView->setChart(createLineChart(asample,10,10));
+    m_chartView->setChart(createLineChart(asample,24,10));
+    cmbBox_theme->currentIndexChanged(cmbBox_theme->currentIndex());
 
 }
 
@@ -757,3 +759,76 @@ void DetailWidget::tooltip(QPointF point, bool state)
         m_tooltip->hide();
     }
 }
+
+void DetailWidget::changeTheme(int index)
+{
+
+    switch (index) {
+    case 0:
+        m_charTheme = QChart::ChartThemeLight;
+        break;
+    case 1:
+        m_charTheme = QChart::ChartThemeDark;
+        break;
+    case 2:
+        m_charTheme = QChart::ChartThemeBlueCerulean;
+        break;
+    case 3:
+        m_charTheme = QChart::ChartThemeBrownSand;
+        break;
+    case 4:
+        m_charTheme = QChart::ChartThemeBlueNcs;
+        break;
+    case 5:
+        m_charTheme = QChart::ChartThemeHighContrast;
+        break;
+    case 6:
+        m_charTheme = QChart::ChartThemeBlueIcy;
+        break;
+    case 7:
+        m_charTheme = QChart::ChartThemeQt;
+        break;
+    default:
+        break;
+    }
+
+        m_chartView->chart()->setTheme(m_charTheme);
+        for(int i=0; i<m_chartView->chart()->axes().count(); ++i )
+        {
+            m_chartView->chart()->axes()[i]->setTitleFont(QFont("Calibri", 12, QFont::Bold));
+        }
+
+        // Set palette colors based on selected theme
+        //![8]
+        QPalette pal = window()->palette();
+        if (m_charTheme == QChart::ChartThemeLight) {
+            pal.setColor(QPalette::Window, QRgb(0xf0f0f0));
+            pal.setColor(QPalette::WindowText, QRgb(0x404044));
+        //![8]
+        } else if (m_charTheme == QChart::ChartThemeDark) {
+            pal.setColor(QPalette::Window, QRgb(0x40434a));
+            pal.setColor(QPalette::WindowText, QRgb(0xd6d6d6));
+        } else if (m_charTheme == QChart::ChartThemeBlueCerulean) {
+            pal.setColor(QPalette::Window, QRgb(0x0D6299));
+            pal.setColor(QPalette::WindowText, QRgb(0xd6d6d6));
+        } else if (m_charTheme == QChart::ChartThemeBrownSand) {
+            pal.setColor(QPalette::Window, QRgb(0x9e8965));
+            pal.setColor(QPalette::WindowText, QRgb(0x404044));
+        } else if (m_charTheme == QChart::ChartThemeBlueNcs) {
+            pal.setColor(QPalette::Window, QRgb(0x018bba));
+            pal.setColor(QPalette::WindowText, QRgb(0x404044));
+        } else if (m_charTheme == QChart::ChartThemeHighContrast) {
+            pal.setColor(QPalette::Window, QRgb(0xffab03));
+            pal.setColor(QPalette::WindowText, QRgb(0x181818));
+        } else if (m_charTheme == QChart::ChartThemeBlueIcy) {
+            pal.setColor(QPalette::Window, QRgb(0xcee7f0));
+            pal.setColor(QPalette::WindowText, QRgb(0x404044));
+        } else {
+            pal.setColor(QPalette::Window, QRgb(0xf0f0f0));
+            pal.setColor(QPalette::WindowText, QRgb(0x404044));
+        }
+        frame_content->setPalette(pal);
+        frame_option->setPalette(pal);
+        window()->setPalette(pal);
+    }
+
