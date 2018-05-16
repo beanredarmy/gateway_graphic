@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>960</width>
-    <height>811</height>
+    <width>868</width>
+    <height>665</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -575,16 +575,46 @@
            <enum>QFrame::Raised</enum>
           </property>
           <layout class="QGridLayout" name="gridLayout_6">
+           <property name="leftMargin">
+            <number>5</number>
+           </property>
+           <property name="topMargin">
+            <number>5</number>
+           </property>
+           <property name="rightMargin">
+            <number>5</number>
+           </property>
+           <property name="bottomMargin">
+            <number>5</number>
+           </property>
+           <property name="spacing">
+            <number>4</number>
+           </property>
            <item row="0" column="0">
             <layout class="QVBoxLayout" name="verticalLayout_3">
+             <property name="spacing">
+              <number>3</number>
+             </property>
              <item>
               <layout class="QVBoxLayout" name="verticalLayout_4">
+               <property name="spacing">
+                <number>3</number>
+               </property>
+               <property name="topMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QLabel" name="label_16">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                  <property name="text">
@@ -597,10 +627,16 @@
                </item>
                <item>
                 <widget class="QCheckBox" name="checkBox_humi_soil">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                  <property name="text">
@@ -613,10 +649,16 @@
                </item>
                <item>
                 <widget class="QCheckBox" name="checkBox_humi_envi">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                  <property name="text">
@@ -626,10 +668,16 @@
                </item>
                <item>
                 <widget class="QCheckBox" name="checkBox_temp_soil">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                  <property name="text">
@@ -639,10 +687,16 @@
                </item>
                <item>
                 <widget class="QCheckBox" name="checkBox_temp_envi">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                  <property name="text">
@@ -668,7 +722,7 @@
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                  <property name="text">
@@ -687,7 +741,7 @@
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                  <property name="editable">
@@ -713,7 +767,7 @@
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                  <property name="text">
@@ -732,7 +786,7 @@
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                 </widget>
@@ -755,7 +809,7 @@
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                  <property name="text">
@@ -768,7 +822,7 @@
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                  <property name="displayFormat">
@@ -799,7 +853,7 @@
                <property name="font">
                 <font>
                  <family>Calibri</family>
-                 <pointsize>13</pointsize>
+                 <pointsize>12</pointsize>
                 </font>
                </property>
                <property name="layoutDirection">
@@ -811,30 +865,34 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_showData">
-               <property name="font">
-                <font>
-                 <family>Calibri</family>
-                 <pointsize>13</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>Xem dữ liệu</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="pushButton_viewNow">
-               <property name="font">
-                <font>
-                 <family>Calibri</family>
-                 <pointsize>13</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>Hiện tại</string>
-               </property>
-              </widget>
+              <layout class="QHBoxLayout" name="horizontalLayout_19">
+               <item>
+                <widget class="QPushButton" name="pushButton_viewNow">
+                 <property name="font">
+                  <font>
+                   <family>Calibri</family>
+                   <pointsize>12</pointsize>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Hiện tại</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_showData">
+                 <property name="font">
+                  <font>
+                   <family>Calibri</family>
+                   <pointsize>12</pointsize>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Mở file</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
              <item>
               <widget class="Line" name="line">
@@ -845,10 +903,16 @@
              </item>
              <item>
               <widget class="QLabel" name="label_15">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="font">
                 <font>
                  <family>Calibri</family>
-                 <pointsize>13</pointsize>
+                 <pointsize>12</pointsize>
                 </font>
                </property>
                <property name="text">
@@ -872,7 +936,7 @@
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                  <property name="text">
@@ -891,7 +955,7 @@
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                 </widget>
@@ -914,7 +978,7 @@
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                  <property name="text">
@@ -927,7 +991,7 @@
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                  <property name="displayFormat">
@@ -953,7 +1017,7 @@
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                  <property name="text">
@@ -972,7 +1036,7 @@
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                 </widget>
@@ -995,7 +1059,7 @@
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                  <property name="text">
@@ -1008,7 +1072,7 @@
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                  <property name="displayFormat">
@@ -1034,7 +1098,7 @@
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                  <property name="text">
@@ -1053,7 +1117,7 @@
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                  <property name="text">
@@ -1072,10 +1136,16 @@
              </item>
              <item>
               <widget class="QLabel" name="label_21">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="font">
                 <font>
                  <family>Calibri</family>
-                 <pointsize>13</pointsize>
+                 <pointsize>12</pointsize>
                 </font>
                </property>
                <property name="text">
@@ -1102,7 +1172,7 @@
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                  <property name="text">
@@ -1121,7 +1191,7 @@
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                 </widget>
@@ -1141,7 +1211,7 @@
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                  <property name="text">
@@ -1160,7 +1230,7 @@
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                 </widget>
@@ -1177,7 +1247,7 @@
              <property name="sizeHint" stdset="0">
               <size>
                <width>20</width>
-               <height>40</height>
+               <height>0</height>
               </size>
              </property>
             </spacer>
@@ -1200,6 +1270,21 @@
            <enum>QFrame::Raised</enum>
           </property>
           <layout class="QGridLayout" name="gridLayout_5">
+           <property name="leftMargin">
+            <number>5</number>
+           </property>
+           <property name="topMargin">
+            <number>5</number>
+           </property>
+           <property name="rightMargin">
+            <number>5</number>
+           </property>
+           <property name="bottomMargin">
+            <number>5</number>
+           </property>
+           <property name="spacing">
+            <number>4</number>
+           </property>
            <item row="0" column="0">
             <layout class="QHBoxLayout" name="horizontalLayout_11">
              <item>
@@ -1207,7 +1292,7 @@
                <item>
                 <widget class="QLabel" name="label_9">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+                  <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -1215,7 +1300,7 @@
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                  <property name="text">
@@ -1230,6 +1315,11 @@
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <family>Calibri</family>
+                  </font>
                  </property>
                 </widget>
                </item>
@@ -1256,7 +1346,7 @@
                <item>
                 <widget class="QLabel" name="label_10">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+                  <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -1264,7 +1354,7 @@
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                  <property name="text">
@@ -1279,6 +1369,11 @@
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <family>Calibri</family>
+                  </font>
                  </property>
                 </widget>
                </item>
@@ -1305,7 +1400,7 @@
                <item>
                 <widget class="QLabel" name="label_11">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+                  <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -1313,7 +1408,7 @@
                  <property name="font">
                   <font>
                    <family>Calibri</family>
-                   <pointsize>13</pointsize>
+                   <pointsize>12</pointsize>
                   </font>
                  </property>
                  <property name="text">
@@ -1329,15 +1424,25 @@
                    <verstretch>0</verstretch>
                   </sizepolicy>
                  </property>
+                 <property name="font">
+                  <font>
+                   <family>Calibri</family>
+                  </font>
+                 </property>
                 </widget>
                </item>
                <item>
                 <widget class="QLabel" name="label_12">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <family>Calibri</family>
+                  </font>
                  </property>
                  <property name="text">
                   <string>/</string>
@@ -1351,6 +1456,11 @@
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
+                 </property>
+                 <property name="font">
+                  <font>
+                   <family>Calibri</family>
+                  </font>
                  </property>
                 </widget>
                </item>
@@ -1375,7 +1485,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>960</width>
+     <width>868</width>
      <height>21</height>
     </rect>
    </property>

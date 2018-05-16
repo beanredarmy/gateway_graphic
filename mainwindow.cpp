@@ -14,7 +14,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->tabWidget->setTabsClosable(true);
     ui->tabWidget->tabBar()->setElideMode(Qt::TextElideMode::ElideRight);
-    ui->tabWidget->setStyleSheet("QTabBar::tab { height: 40px; width: 150px; }");
+    ui->tabWidget->setStyleSheet("QTabBar::tab { height: 35px; width: 150px; }");
+
+    QChartView *chartView = new QChartView(this);
+    chartView->setRenderHint(QPainter::Antialiasing, true);
+    ui->gridLayout_graph->addWidget(chartView);
 
     connect(m_addTabButton, SIGNAL (clicked()),this, SLOT (createTab()));
     connect(ui->tabWidget,SIGNAL(tabCloseRequested(int)),this,SLOT(removeTab(int)));
@@ -79,7 +83,7 @@ void MainWindow::createAddTabButton()
 {
     QWidget* pTabCornerWidget = new QWidget(this);
     m_addTabButton = new QPushButton("+",pTabCornerWidget);
-    m_addTabButton->setMaximumSize(QSize(25, 25));
+    m_addTabButton->setMaximumSize(QSize(20, 20));
 
     QHBoxLayout* pHLayout = new QHBoxLayout(pTabCornerWidget);
     pHLayout->addWidget(m_addTabButton);

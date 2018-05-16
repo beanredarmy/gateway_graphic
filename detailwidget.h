@@ -71,8 +71,9 @@ public:
     QLabel *label_8;
     QDateEdit *dateEdit_device1;
     QPushButton *pushButton_OK;
-    QPushButton *pushButton_showData;
+    QHBoxLayout *horizontalLayout_19;
     QPushButton *pushButton_viewNow;
+    QPushButton *pushButton_showData;
     QFrame *line;
     QLabel *label_15;
     QHBoxLayout *horizontalLayout_14;
