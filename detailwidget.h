@@ -15,10 +15,39 @@
 #include <QDebug>
 #include <QCategoryAxis>
 #include <QtWidgets/QGraphicsTextItem>
-#include "measureindex.h"
+#include <QGraphicsLayout>
+#include <QtWidgets/QWidget>
+#include <QtCharts/QChartGlobal>
+#include <QtCharts/QChartView>
+#include <QChartView>
+#include <QtCharts/QPieSeries>
+#include <QtCharts/QPieSlice>
+#include <QtCharts/QAbstractBarSeries>
+#include <QtCharts/QPercentBarSeries>
+#include <QtCharts/QStackedBarSeries>
+#include <QtCharts/QBarSeries>
+#include <QtCharts/QBarSet>
+#include <QtCharts/QLineSeries>
+#include <QtCharts/QSplineSeries>
+#include <QtCharts/QScatterSeries>
+#include <QtCharts/QAreaSeries>
+#include <QtCharts/QLegend>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QFormLayout>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QLabel>
+#include <QtCore/QRandomGenerator>
+#include <QtCharts/QBarCategoryAxis>
+#include <QtWidgets/QApplication>
+#include <QtCharts/QValueAxis>
+#include <QDir>
+#include "specificdata.h"
 #include "callout.h"
 
-typedef QPair<float ,float> DataAndTime;
+
 class DetailWidget : public QWidget
 {
     Q_OBJECT
@@ -28,9 +57,11 @@ public:
 
     void setupWidgets();
     void setupOptions();
-    QChart *createLineChart(std::vector<std::vector<DataAndTime>> dateTimeVector, int valueMax, int valueCount) const;        //Tao bieu do duong thang
-    QChart *createSplineChart(std::vector<std::vector<DataAndTime>> dateTimeVector, int valueMax, int valueCount) const;      //Tao bieu do duong cong
-    QChart *createScatterChart(std::vector<std::vector<DataAndTime>> dateTimeVector, int valueMax, int valueCount) const;     //Tao bieu do cham
+    void setupFontChart(QChart *chart) const;
+    QChart *createLineChart(std::vector<SpecificData*> specDataVector, int valueMax, int valueCount) const;        //Tao bieu do duong thang
+
+    QChart *createSplineChart(std::vector<std::vector<Data_Time>> dateTimeVector, int valueMax, int valueCount) const;      //Tao bieu do duong cong
+    QChart *createScatterChart(std::vector<std::vector<Data_Time>> dateTimeVector, int valueMax, int valueCount) const;     //Tao bieu do cham
 
 signals:
 
@@ -52,6 +83,23 @@ public:
     int m_order;
 
     QGridLayout *gridLayout_2;
+    QFrame *frame_content;
+    QGridLayout *gridLayout_5;
+    QHBoxLayout *horizontalLayout_11;
+    QHBoxLayout *horizontalLayout_8;
+    QLabel *label_9;
+    QLCDNumber *lcdNumber_curValue;
+    QSpacerItem *horizontalSpacer;
+    QHBoxLayout *horizontalLayout_9;
+    QLabel *label_10;
+    QLCDNumber *lcdNumber_aveValue;
+    QSpacerItem *horizontalSpacer_2;
+    QHBoxLayout *horizontalLayout_10;
+    QLabel *label_11;
+    QLCDNumber *lcdNumber_minValue;
+    QLabel *label_12;
+    QLCDNumber *lcdNumber_maxValue;
+    QGridLayout *gridLayout_graph;
     QFrame *frame_option;
     QGridLayout *gridLayout_6;
     QVBoxLayout *verticalLayout_3;
@@ -100,23 +148,6 @@ public:
     QLabel *label_23;
     QComboBox *cmbBox_theme;
     QSpacerItem *verticalSpacer;
-    QFrame *frame_content;
-    QGridLayout *gridLayout_5;
-    QHBoxLayout *horizontalLayout_11;
-    QHBoxLayout *horizontalLayout_8;
-    QLabel *label_9;
-    QLCDNumber *lcdNumber_curValue;
-    QSpacerItem *horizontalSpacer;
-    QHBoxLayout *horizontalLayout_9;
-    QLabel *label_10;
-    QLCDNumber *lcdNumber_aveValue;
-    QSpacerItem *horizontalSpacer_2;
-    QHBoxLayout *horizontalLayout_10;
-    QLabel *label_11;
-    QLCDNumber *lcdNumber_minValue;
-    QLabel *label_12;
-    QLCDNumber *lcdNumber_maxValue;
-    QGridLayout *gridLayout_graph;
 };
 
 #endif // DETAILWIDGET_H

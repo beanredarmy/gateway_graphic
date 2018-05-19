@@ -26,15 +26,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    measureindex.cpp \
     detailwidget.cpp \
-    callout.cpp
+    callout.cpp \
+    specificdata.cpp
 
 HEADERS += \
         mainwindow.h \
-    measureindex.h \
     detailwidget.h \
-    callout.h
+    callout.h \
+    specificdata.h
 
 FORMS += \
         mainwindow.ui
