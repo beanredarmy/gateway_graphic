@@ -602,7 +602,7 @@ void DetailWidget::setupFontChart(QChart *chart) const
         chart->axes()[i]->setLabelsFont(QFont("Calibri", 11));
 
     }
-    chart->legend()->setFont(QFont("Calibri", 11));
+    chart->legend()->setFont(QFont("Calibri", 10));
 }
 
 QChart *DetailWidget::createLineChart(std::vector<SpecificData *> specDataVector, int valueMax, int valueCount) const
@@ -625,10 +625,9 @@ QChart *DetailWidget::createLineChart(std::vector<SpecificData *> specDataVector
         }
 
         series->setName(specDataVector[i]->deviceName() + QString(": ") + specDataVector[i]->dataTypeName());
-
         chart->addSeries(series);
         chart->addSeries(series2);
-
+        chart->legend()->markers(series2)[0]->setVisible(false);
 
         connect(series, &QSplineSeries::hovered, this, &DetailWidget::tooltip);
         connect(series2, &QSplineSeries::hovered, this, &DetailWidget::tooltip);

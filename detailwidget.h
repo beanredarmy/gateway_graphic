@@ -44,6 +44,8 @@
 #include <QtWidgets/QApplication>
 #include <QtCharts/QValueAxis>
 #include <QDir>
+#include <QLegendMarker>
+#include <QLegend>
 #include "specificdata.h"
 #include "callout.h"
 
