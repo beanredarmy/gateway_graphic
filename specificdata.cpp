@@ -23,6 +23,13 @@ SpecificData::SpecificData(int dataType, QString deviceName, std::vector<Data_Ti
     }
 }
 
+SpecificData::~SpecificData()
+{
+    qDebug() << "huy spec Data";
+}
+
+
+
 QString SpecificData::dataTypeName() const
 {
     return m_dataTypeName;
@@ -51,4 +58,14 @@ std::vector<Data_Time> SpecificData::dataTimeVector() const
 void SpecificData::setDataTimeVector(const std::vector<Data_Time> &dataTimeVector)
 {
     m_dataTimeVector = dataTimeVector;
+}
+
+int SpecificData::dataType() const
+{
+    return m_dataType;
+}
+
+void SpecificData::setDataType(int dataType)
+{
+    m_dataType = dataType;
 }

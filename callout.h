@@ -48,7 +48,7 @@ class Callout : public QGraphicsItem
 {
 public:
     Callout(QChart *parent);
-
+    ~Callout();
     void setText(const QString &text);
     void setAnchor(QPointF point);
     void updateGeometry();

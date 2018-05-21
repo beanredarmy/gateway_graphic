@@ -20,7 +20,6 @@ MainWindow::MainWindow(QWidget *parent) :
     chartView->setRenderHint(QPainter::Antialiasing, true);
     ui->gridLayout_graph->addWidget(chartView);
 
-
     connect(m_addTabButton, SIGNAL (clicked()),this, SLOT (createTab()));
     connect(ui->tabWidget,SIGNAL(tabCloseRequested(int)),this,SLOT(removeTab(int)));
 }
@@ -41,30 +40,15 @@ void MainWindow::connectFileToClass()
             DetailWidget::m_deviceList << mDir.entryInfoList()[i].fileName();
         }
     }
-   /* foreach(QFileInfo mItm, mDir.entryInfoList())
-    {
-        if(mItm.fileName() != "." && mItm.fileName() != "..")
-        {
-            DetailWidget::m_deviceList << mItm.fileName();
-        }
-    }
-    */
 }
 
 void MainWindow::createTab()
 {
     DetailWidget *detailWidget = new DetailWidget(this);
-    //detailWidget->m_order = m_dtWidgetVector.size();
-    //m_dtWidgetVector.push_back(detailWidget);
-   // ui->tabWidget->addTab(detailWidget,QString("CHI TIẾT %1").arg(detailWidget->m_order+2));
-
     detailWidget->m_order = ui->tabWidget->count();
     ui->tabWidget->addTab(detailWidget,QString("CHI TIẾT %1").arg(detailWidget->m_order));
     ui->tabWidget->setCurrentIndex(detailWidget->m_order);
     connect(detailWidget->cmbBox_device, SIGNAL (currentIndexChanged(QString)),this, SLOT (changeTabTitle(QString)));
-  //  detailWidget->resize(ui->tabWidget->widget(1)->size());
-    qDebug() << detailWidget->size();
-
 }
 
 void MainWindow::changeTabTitle(QString titleName)
@@ -77,7 +61,6 @@ void MainWindow::removeTab(int tabOrder)
     if(tabOrder > 1)
     {
         delete ui->tabWidget->widget(tabOrder);
-      //  m_dtWidgetVector.erase(m_dtWidgetVector.begin() + tabOrder-2);
         qDebug() << m_dtWidgetVector.size();
     } else ui->statusBar->showMessage("Không thể đóng tab này",2000);
 

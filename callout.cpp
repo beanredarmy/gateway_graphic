@@ -33,11 +33,19 @@
 #include <QtWidgets/QGraphicsSceneMouseEvent>
 #include <QtGui/QMouseEvent>
 #include <QtCharts/QChart>
+#include <QDebug>
 
 Callout::Callout(QChart *chart):
     QGraphicsItem(chart),
     m_chart(chart)
 {
+    qDebug() << "Tao callout";
+}
+
+Callout::~Callout()
+{
+    qDebug() << "Huy callout";
+  //  delete m_chart;
 }
 
 QRectF Callout::boundingRect() const

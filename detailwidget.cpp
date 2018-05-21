@@ -576,7 +576,7 @@ void DetailWidget::setupWidgets()
 
     m_chartView = new QChartView();
     m_chartView->setRenderHint(QPainter::Antialiasing, true);
-    m_chartView->setMaximumSize(750,450);
+   // m_chartView->setMaximumSize(800,450);
     gridLayout_graph->addWidget(m_chartView);
 }
 
@@ -628,9 +628,18 @@ QChart *DetailWidget::createLineChart(std::vector<SpecificData *> specDataVector
         chart->addSeries(series);
         chart->addSeries(series2);
         chart->legend()->markers(series2)[0]->setVisible(false);
+        if(specDataVector[i]->dataType() == 1 || specDataVector[i]->dataType() == 2) // Neu series cua do am thi ket noi toi tooltip
+        {
+            //Connect signal re chuot cua series toi callout
+            connect(series, &QSplineSeries::hovered, this, &DetailWidget::tooltip);
+            connect(series2, &QSplineSeries::hovered, this, &DetailWidget::tooltip);
+        } else // Neu series cua nhiet do thi ket noi toi tooltip_temp
+        {
+            //Connect signal re chuot cua series toi callout
+            connect(series, &QSplineSeries::hovered, this, &DetailWidget::tooltip_temp);
+            connect(series2, &QSplineSeries::hovered, this, &DetailWidget::tooltip_temp);
+        }
 
-        connect(series, &QSplineSeries::hovered, this, &DetailWidget::tooltip);
-        connect(series2, &QSplineSeries::hovered, this, &DetailWidget::tooltip);
 
     }
     //![2]
@@ -660,8 +669,6 @@ QChart *DetailWidget::createLineChart(std::vector<SpecificData *> specDataVector
     return chart;
 
 }
-
-
 
 QChart *DetailWidget::createSplineChart(std::vector<std::vector<Data_Time>> dateTimeVector, int valueMax, int valueCount) const
 {
@@ -785,7 +792,12 @@ void DetailWidget::drawChart()
 
     m_chartView->chart()->deleteLater();
     m_chartView->setChart(createLineChart(avec,24,10));
+    delete a1;
+    delete a2;
+    delete a3;
     setupFontChart(m_chartView->chart());
+
+    //Thay doi theme
     cmbBox_theme->currentIndexChanged(cmbBox_theme->currentIndex());
 
 }
@@ -839,12 +851,32 @@ void DetailWidget::hideComparison()
 
 void DetailWidget::tooltip(QPointF point, bool state)
 {
-    qDebug() << "Hover";
+    qDebug() << "Hover do am";
     if (m_tooltip == 0)
         m_tooltip = new Callout(m_chartView->chart());
 
     if (state) {
-        m_tooltip->setText(QString("X: %1 \nY: %2 ").arg(point.x()).arg(point.y()));
+        int minute = (int)((point.x()-(int)point.x())*60);
+        m_tooltip->setText(QString("T.Gian: %1h%2p \nĐ.Ẩm: %3 (%)").arg(round(point.x())).arg(minute).arg(round(point.y()*100)/100));
+
+        m_tooltip->setAnchor(point);
+        m_tooltip->setZValue(11);
+        m_tooltip->updateGeometry();
+        m_tooltip->show();
+    } else {
+        m_tooltip->hide();
+    }
+}
+
+void DetailWidget::tooltip_temp(QPointF point, bool state)
+{
+    qDebug() << "Hover nhiet";
+    if (m_tooltip == 0)
+        m_tooltip = new Callout(m_chartView->chart());
+
+    if (state) {
+        int minute = (int)((point.x()-(int)point.x())*60);
+        m_tooltip->setText(QString("T.Gian: %1h%2p \nN.Độ: %3 (°C)").arg(round(point.x())).arg(minute).arg(round(point.y()*60)/100));
         m_tooltip->setAnchor(point);
         m_tooltip->setZValue(11);
         m_tooltip->updateGeometry();

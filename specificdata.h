@@ -20,6 +20,9 @@ public:
     std::vector<Data_Time> dataTimeVector() const;
     void setDataTimeVector(const std::vector<Data_Time> &dataTimeVector);
 
+    int dataType() const;
+    void setDataType(int dataType);
+
 private:
     int m_dataType;
     QString m_dataTypeName;
