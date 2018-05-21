@@ -18,6 +18,339 @@ DetailWidget::~DetailWidget()
     qDebug() << QString("huy %1").arg(m_order);
 }
 
+void DetailWidget::setupOptions()
+{
+    cmbBox_dateMode->addItems(QStringList() << "Ngày" << "7 Ngày" << "Tháng");
+    cmbBox_graphMode->addItems(QStringList() << "Line" << "Spline" << "Scatter");
+    cmbBox_theme->addItems(QStringList() << "Light" << "Dark" << "Blue Cerulean" << "Brown Sand" << "Blue NCS" << "High Contrast" << "Blue Icy" << "Qt");
+    connect(cmbBox_theme, SIGNAL (currentIndexChanged(int)),this, SLOT (changeTheme(int)));
+    cmbBox_device->addItems(m_deviceList);
+    cmbBox_device2->addItems(m_deviceList);
+    cmbBox_device3->addItems(m_deviceList);
+    dateEdit_device1->setDate(QDate::currentDate());
+    dateEdit_device2->setDate(QDate::currentDate());
+    dateEdit_device3->setDate(QDate::currentDate());
+}
+
+void DetailWidget::setupFontChart(QChart *chart) const
+{
+    for(int i=0; i<chart->axes().count(); ++i )
+    {
+        chart->axes()[i]->setTitleFont(QFont("Calibri", 11, QFont::Bold));
+        chart->axes()[i]->setLabelsFont(QFont("Calibri", 11));
+
+    }
+    chart->legend()->setFont(QFont("Calibri", 10));
+}
+
+QChart *DetailWidget::createLineChart(std::vector<SpecificData *> specDataVector, int valueMax, int valueCount) const
+{
+    QChart *chart = new QChart();
+    chart->setContentsMargins(-25,-25,-25,-25);
+
+    for (uint i = 0; i<specDataVector.size();i++)  {
+        QScatterSeries *series2 = new QScatterSeries(chart);
+        series2->setMarkerSize(5.0);
+        QLineSeries *series = new QLineSeries(chart);
+
+        for (uint j = 0; j<specDataVector[i]->dataTimeVector().size();j++)
+        {
+            series->append(specDataVector[i]->dataTimeVector()[j].second, specDataVector[i]->dataTimeVector()[j].first);
+            series2->append(specDataVector[i]->dataTimeVector()[j].second, specDataVector[i]->dataTimeVector()[j].first);
+        }
+
+        series->setName(specDataVector[i]->deviceName() + QString(": ") + specDataVector[i]->dataTypeName());
+        chart->addSeries(series);
+        chart->addSeries(series2);
+        chart->legend()->markers(series2)[0]->setVisible(false);
+        if(specDataVector[i]->dataType() == 1 || specDataVector[i]->dataType() == 2) // Neu series cua do am thi ket noi toi tooltip
+        {
+            //Connect signal re chuot cua series toi callout
+            connect(series, &QSplineSeries::hovered, this, &DetailWidget::tooltip);
+            connect(series2, &QSplineSeries::hovered, this, &DetailWidget::tooltip);
+        } else // Neu series cua nhiet do thi ket noi toi tooltip_temp
+        {
+            //Connect signal re chuot cua series toi callout
+            connect(series, &QSplineSeries::hovered, this, &DetailWidget::tooltip_temp);
+            connect(series2, &QSplineSeries::hovered, this, &DetailWidget::tooltip_temp);
+        }
+    }
+    //![2]
+
+    //![3]
+    chart->createDefaultAxes();
+    chart->axisX()->setRange(0, valueMax);
+    chart->axisY()->setRange(0, valueCount);
+    chart->axisX()->setTitleText("Thời gian (h)");
+    chart->axisY()->setTitleText("Độ ẩm (%)");
+
+    QValueAxis *axisTemp = new QValueAxis();
+    axisTemp->setRange(0,6);
+    axisTemp->setTitleText("Nhiệt độ (độ C)");
+    chart->addAxis(axisTemp,Qt::AlignRight);
+
+    //![3]
+    //![4]
+    // Add space to label to add space between labels and axis
+    static_cast<QValueAxis *>(chart->axisY())->setLabelFormat("%.1f  ");
+    static_cast<QValueAxis *>(chart->axisX())->setTickCount(valueMax/2+1);
+    //![4]
+    //!
+    //!
+    //chart->setFont(QFont("Calibri", 11));
+
+    return chart;
+
+}
+
+QChart *DetailWidget::createSplineChart(std::vector<std::vector<Data_Time>> dateTimeVector, int valueMax, int valueCount) const
+{
+    //![1]
+    QChart *chart = new QChart();
+    chart->setTitle("Line chart");
+    //![1]
+
+    //![2]
+    QString name("Series ");
+    int nameIndex = 0;
+    for (std::vector<std::vector<Data_Time>>::iterator it = dateTimeVector.begin(); it != dateTimeVector.end(); it++)  {
+        QScatterSeries *series2 = new QScatterSeries(chart);
+        series2->setMarkerSize(5.0);
+        QSplineSeries *series = new QSplineSeries(chart);
+        for (std::vector<Data_Time>::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++)
+        {
+            series->append((*it2).second, (*it2).first);
+            series2->append((*it2).second, (*it2).first);
+        }
+        series->setName(name + QString::number(nameIndex));
+        series2->setName(name + QString::number(nameIndex));
+        nameIndex++;
+        chart->addSeries(series);
+        chart->addSeries(series2);
+    }
+    //![2]
+
+    //![3]
+    chart->createDefaultAxes();
+    chart->axisX()->setRange(0, valueMax);
+    chart->axisY()->setRange(0, valueCount);
+    //![3]
+    //![4]
+    // Add space to label to add space between labels and axis
+    static_cast<QValueAxis *>(chart->axisY())->setLabelFormat("%.1f  ");
+    //![4]
+
+    return chart;
+}
+
+QChart *DetailWidget::createScatterChart(std::vector<std::vector<Data_Time>> dateTimeVector, int valueMax, int valueCount) const
+{
+    //![1]
+    QChart *chart = new QChart();
+    chart->setTitle("Line chart");
+    //![1]
+
+    //![2]
+    QString name("Series ");
+    int nameIndex = 0;
+    for (std::vector<std::vector<Data_Time>>::iterator it = dateTimeVector.begin(); it != dateTimeVector.end(); it++)  {
+        QScatterSeries *series2 = new QScatterSeries(chart);
+        series2->setMarkerSize(10.0);
+        for (std::vector<Data_Time>::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++)
+        {
+            series2->append((*it2).second, (*it2).first);
+        }
+        series2->setName(name + QString::number(nameIndex));
+        nameIndex++;
+        chart->addSeries(series2);
+    }
+    //![2]
+
+    //![3]
+    chart->createDefaultAxes();
+    chart->axisX()->setRange(0, valueMax);
+    chart->axisY()->setRange(0, valueCount);
+    //![3]
+    //![4]
+    // Add space to label to add space between labels and axis
+    static_cast<QValueAxis *>(chart->axisY())->setLabelFormat("%.1f  ");
+    //![4]
+
+    return chart;
+}
+
+std::vector<Data_Time> DetailWidget::creatDataTime()
+{
+    std::vector<Data_Time> dataTimeVector;
+    dataTimeVector.push_back(Data_Time(4.0,1.0));
+    dataTimeVector.push_back(Data_Time(3.0,1.5));
+    dataTimeVector.push_back(Data_Time(2.5,2.5));
+    dataTimeVector.push_back(Data_Time(1.0,3.0));
+    dataTimeVector.push_back(Data_Time(4.0,4.5));
+    dataTimeVector.push_back(Data_Time(5.5,5.5));
+    dataTimeVector.push_back(Data_Time(6.0,6.0));
+    dataTimeVector.push_back(Data_Time(8.0,7.5));
+    dataTimeVector.push_back(Data_Time(9.0,9.5));
+    return dataTimeVector;
+}
+
+void DetailWidget::drawChart()
+{
+    m_tooltip = 0;
+    QString deviceName = cmbBox_device->currentText();
+    std::vector<SpecificData*> specDataVector;
+    QCheckBox *checkBoxes[4] = {checkBox_humi_soil, checkBox_humi_envi, checkBox_temp_soil, checkBox_temp_envi };
+    for(int i = 0; i < 4; i++)
+    {
+        if(checkBoxes[i]->isChecked())
+        {
+            SpecificData *specData = new SpecificData(i+1,deviceName,creatDataTime()); //should continue here.....
+            specDataVector.push_back(specData);
+        }
+    }
+
+    m_chartView->chart()->deleteLater();
+    m_chartView->setChart(createLineChart(specDataVector,24,10));
+    //Giai phong bo nho
+    for (std::vector< SpecificData* >::iterator it = specDataVector.begin() ; it != specDataVector.end(); ++it)
+    {
+        delete (*it);
+    }
+    specDataVector.clear();
+
+    //Cai dat lai font
+    setupFontChart(m_chartView->chart());
+    //Thay doi theme
+    cmbBox_theme->currentIndexChanged(cmbBox_theme->currentIndex());
+
+}
+
+void DetailWidget::viewFileData()
+{
+}
+
+void DetailWidget::showPresentData()
+{
+
+}
+
+void DetailWidget::compareData()
+{
+
+}
+
+void DetailWidget::hideComparison()
+{
+
+}
+
+void DetailWidget::tooltip(QPointF point, bool state)
+{
+    qDebug() << "Hover do am";
+    if (m_tooltip == 0)
+        m_tooltip = new Callout(m_chartView->chart());
+
+    if (state) {
+        int minute = (int)((point.x()-(int)point.x())*60);
+        m_tooltip->setText(QString("T.Gian: %1h%2p \nĐ.Ẩm: %3 (%)").arg(round(point.x())).arg(minute).arg(round(point.y()*100)/100));
+
+        m_tooltip->setAnchor(point);
+        m_tooltip->setZValue(11);
+        m_tooltip->updateGeometry();
+        m_tooltip->show();
+    } else {
+        m_tooltip->hide();
+    }
+}
+
+void DetailWidget::tooltip_temp(QPointF point, bool state)
+{
+    qDebug() << "Hover nhiet";
+    if (m_tooltip == 0)
+        m_tooltip = new Callout(m_chartView->chart());
+
+    if (state) {
+        int minute = (int)((point.x()-(int)point.x())*60);
+        m_tooltip->setText(QString("T.Gian: %1h%2p \nN.Độ: %3 (°C)").arg(round(point.x())).arg(minute).arg(round(point.y()*60)/100));
+        m_tooltip->setAnchor(point);
+        m_tooltip->setZValue(11);
+        m_tooltip->updateGeometry();
+        m_tooltip->show();
+    } else {
+        m_tooltip->hide();
+    }
+}
+
+void DetailWidget::changeTheme(int index)
+{
+
+    switch (index) {
+    case 0:
+        m_charTheme = QChart::ChartThemeLight;
+        break;
+    case 1:
+        m_charTheme = QChart::ChartThemeDark;
+        break;
+    case 2:
+        m_charTheme = QChart::ChartThemeBlueCerulean;
+        break;
+    case 3:
+        m_charTheme = QChart::ChartThemeBrownSand;
+        break;
+    case 4:
+        m_charTheme = QChart::ChartThemeBlueNcs;
+        break;
+    case 5:
+        m_charTheme = QChart::ChartThemeHighContrast;
+        break;
+    case 6:
+        m_charTheme = QChart::ChartThemeBlueIcy;
+        break;
+    case 7:
+        m_charTheme = QChart::ChartThemeQt;
+        break;
+    default:
+        break;
+    }
+
+        m_chartView->chart()->setTheme(m_charTheme);
+
+        setupFontChart(m_chartView->chart());
+
+        // Set palette colors based on selected theme
+        //![8]
+        QPalette pal = window()->palette();
+        if (m_charTheme == QChart::ChartThemeLight) {
+            pal.setColor(QPalette::Window, QRgb(0xf0f0f0));
+            pal.setColor(QPalette::WindowText, QRgb(0x404044));
+        //![8]
+        } else if (m_charTheme == QChart::ChartThemeDark) {
+            pal.setColor(QPalette::Window, QRgb(0x40434a));
+            pal.setColor(QPalette::WindowText, QRgb(0xd6d6d6));
+        } else if (m_charTheme == QChart::ChartThemeBlueCerulean) {
+            pal.setColor(QPalette::Window, QRgb(0x0D6299));
+            pal.setColor(QPalette::WindowText, QRgb(0xd6d6d6));
+        } else if (m_charTheme == QChart::ChartThemeBrownSand) {
+            pal.setColor(QPalette::Window, QRgb(0x9e8965));
+            pal.setColor(QPalette::WindowText, QRgb(0x404044));
+        } else if (m_charTheme == QChart::ChartThemeBlueNcs) {
+            pal.setColor(QPalette::Window, QRgb(0x018bba));
+            pal.setColor(QPalette::WindowText, QRgb(0x404044));
+        } else if (m_charTheme == QChart::ChartThemeHighContrast) {
+            pal.setColor(QPalette::Window, QRgb(0xffab03));
+            pal.setColor(QPalette::WindowText, QRgb(0x181818));
+        } else if (m_charTheme == QChart::ChartThemeBlueIcy) {
+            pal.setColor(QPalette::Window, QRgb(0xcee7f0));
+            pal.setColor(QPalette::WindowText, QRgb(0x404044));
+        } else {
+            pal.setColor(QPalette::Window, QRgb(0xf0f0f0));
+            pal.setColor(QPalette::WindowText, QRgb(0x404044));
+        }
+        frame_content->setPalette(pal);
+        frame_option->setPalette(pal);
+        window()->setPalette(pal);
+    }
+
 void DetailWidget::setupWidgets()
 {
     QFont font;
@@ -579,380 +912,3 @@ void DetailWidget::setupWidgets()
    // m_chartView->setMaximumSize(800,450);
     gridLayout_graph->addWidget(m_chartView);
 }
-
-void DetailWidget::setupOptions()
-{
-    cmbBox_dateMode->addItems(QStringList() << "Ngày" << "7 Ngày" << "Tháng");
-    cmbBox_graphMode->addItems(QStringList() << "Line" << "Spline" << "Scatter");
-    cmbBox_theme->addItems(QStringList() << "Light" << "Dark" << "Blue Cerulean" << "Brown Sand" << "Blue NCS" << "High Contrast" << "Blue Icy" << "Qt");
-    connect(cmbBox_theme, SIGNAL (currentIndexChanged(int)),this, SLOT (changeTheme(int)));
-    cmbBox_device->addItems(m_deviceList);
-    cmbBox_device2->addItems(m_deviceList);
-    cmbBox_device3->addItems(m_deviceList);
-    dateEdit_device1->setDate(QDate::currentDate());
-    dateEdit_device2->setDate(QDate::currentDate());
-    dateEdit_device3->setDate(QDate::currentDate());
-}
-
-void DetailWidget::setupFontChart(QChart *chart) const
-{
-    for(int i=0; i<chart->axes().count(); ++i )
-    {
-        chart->axes()[i]->setTitleFont(QFont("Calibri", 11, QFont::Bold));
-        chart->axes()[i]->setLabelsFont(QFont("Calibri", 11));
-
-    }
-    chart->legend()->setFont(QFont("Calibri", 10));
-}
-
-QChart *DetailWidget::createLineChart(std::vector<SpecificData *> specDataVector, int valueMax, int valueCount) const
-{
-    QChart *chart = new QChart();
-    chart->setContentsMargins(-25,-25,-25,-25);
-
-    for (uint i = 0; i<specDataVector.size();i++)  {
-        QScatterSeries *series2 = new QScatterSeries(chart);
-        series2->setMarkerSize(5.0);
-        QLineSeries *series = new QLineSeries(chart);
-
-
-        for (uint j = 0; j<specDataVector[i]->dataTimeVector().size();j++)
-        {
-            series->append(specDataVector[i]->dataTimeVector()[j].second, specDataVector[i]->dataTimeVector()[j].first);
-            series2->append(specDataVector[i]->dataTimeVector()[j].second, specDataVector[i]->dataTimeVector()[j].first);
-
-
-        }
-
-        series->setName(specDataVector[i]->deviceName() + QString(": ") + specDataVector[i]->dataTypeName());
-        chart->addSeries(series);
-        chart->addSeries(series2);
-        chart->legend()->markers(series2)[0]->setVisible(false);
-        if(specDataVector[i]->dataType() == 1 || specDataVector[i]->dataType() == 2) // Neu series cua do am thi ket noi toi tooltip
-        {
-            //Connect signal re chuot cua series toi callout
-            connect(series, &QSplineSeries::hovered, this, &DetailWidget::tooltip);
-            connect(series2, &QSplineSeries::hovered, this, &DetailWidget::tooltip);
-        } else // Neu series cua nhiet do thi ket noi toi tooltip_temp
-        {
-            //Connect signal re chuot cua series toi callout
-            connect(series, &QSplineSeries::hovered, this, &DetailWidget::tooltip_temp);
-            connect(series2, &QSplineSeries::hovered, this, &DetailWidget::tooltip_temp);
-        }
-
-
-    }
-    //![2]
-
-    //![3]
-    chart->createDefaultAxes();
-    chart->axisX()->setRange(0, valueMax);
-    chart->axisY()->setRange(0, valueCount);
-    chart->axisX()->setTitleText("Thời gian (h)");
-    chart->axisY()->setTitleText("Độ ẩm (%)");
-
-    QValueAxis *axisTemp = new QValueAxis();
-    axisTemp->setRange(0,6);
-    axisTemp->setTitleText("Nhiệt độ (độ C)");
-    chart->addAxis(axisTemp,Qt::AlignRight);
-
-    //![3]
-    //![4]
-    // Add space to label to add space between labels and axis
-    static_cast<QValueAxis *>(chart->axisY())->setLabelFormat("%.1f  ");
-    static_cast<QValueAxis *>(chart->axisX())->setTickCount(valueMax/2+1);
-    //![4]
-    //!
-    //!
-    //chart->setFont(QFont("Calibri", 11));
-
-    return chart;
-
-}
-
-QChart *DetailWidget::createSplineChart(std::vector<std::vector<Data_Time>> dateTimeVector, int valueMax, int valueCount) const
-{
-    //![1]
-    QChart *chart = new QChart();
-    chart->setTitle("Line chart");
-    //![1]
-
-    //![2]
-    QString name("Series ");
-    int nameIndex = 0;
-    for (std::vector<std::vector<Data_Time>>::iterator it = dateTimeVector.begin(); it != dateTimeVector.end(); it++)  {
-        QScatterSeries *series2 = new QScatterSeries(chart);
-        series2->setMarkerSize(5.0);
-        QSplineSeries *series = new QSplineSeries(chart);
-        for (std::vector<Data_Time>::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++)
-        {
-            series->append((*it2).second, (*it2).first);
-            series2->append((*it2).second, (*it2).first);
-        }
-        series->setName(name + QString::number(nameIndex));
-        series2->setName(name + QString::number(nameIndex));
-        nameIndex++;
-        chart->addSeries(series);
-        chart->addSeries(series2);
-    }
-    //![2]
-
-    //![3]
-    chart->createDefaultAxes();
-    chart->axisX()->setRange(0, valueMax);
-    chart->axisY()->setRange(0, valueCount);
-    //![3]
-    //![4]
-    // Add space to label to add space between labels and axis
-    static_cast<QValueAxis *>(chart->axisY())->setLabelFormat("%.1f  ");
-    //![4]
-
-    return chart;
-}
-
-QChart *DetailWidget::createScatterChart(std::vector<std::vector<Data_Time>> dateTimeVector, int valueMax, int valueCount) const
-{
-    //![1]
-    QChart *chart = new QChart();
-    chart->setTitle("Line chart");
-    //![1]
-
-    //![2]
-    QString name("Series ");
-    int nameIndex = 0;
-    for (std::vector<std::vector<Data_Time>>::iterator it = dateTimeVector.begin(); it != dateTimeVector.end(); it++)  {
-        QScatterSeries *series2 = new QScatterSeries(chart);
-        series2->setMarkerSize(10.0);
-        for (std::vector<Data_Time>::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++)
-        {
-            series2->append((*it2).second, (*it2).first);
-        }
-        series2->setName(name + QString::number(nameIndex));
-        nameIndex++;
-        chart->addSeries(series2);
-    }
-    //![2]
-
-    //![3]
-    chart->createDefaultAxes();
-    chart->axisX()->setRange(0, valueMax);
-    chart->axisY()->setRange(0, valueCount);
-    //![3]
-    //![4]
-    // Add space to label to add space between labels and axis
-    static_cast<QValueAxis *>(chart->axisY())->setLabelFormat("%.1f  ");
-    //![4]
-
-    return chart;
-}
-
-void DetailWidget::drawChart()
-{
-    m_tooltip = 0;
-    std::vector<Data_Time> sample;
-    sample.push_back(Data_Time(4.0,1.0));
-    sample.push_back(Data_Time(3.0,1.5));
-    sample.push_back(Data_Time(2.5,2.5));
-    sample.push_back(Data_Time(1.0,3.0));
-    sample.push_back(Data_Time(4.0,4.5));
-    sample.push_back(Data_Time(5.5,5.5));
-    sample.push_back(Data_Time(6.0,6.0));
-    sample.push_back(Data_Time(8.0,7.5));
-    sample.push_back(Data_Time(9.0,9.5));
-    SpecificData *a1 = new SpecificData(1,"Dia diem A", sample);
-
-    std::vector<Data_Time> sample2;
-    sample2.push_back(Data_Time(6.0,0.5));
-    sample2.push_back(Data_Time(2.0,2.0));
-    sample2.push_back(Data_Time(3.5,2.2));
-    sample2.push_back(Data_Time(4.0,3.0));
-    sample2.push_back(Data_Time(6.0,4.0));
-    sample2.push_back(Data_Time(6.5,5.0));
-    sample2.push_back(Data_Time(8.0,6.5));
-    sample2.push_back(Data_Time(8.0,7.0));
-    sample2.push_back(Data_Time(7.0,10));
-    SpecificData *a2 = new SpecificData(2,"Dia diem Adlk", sample2);
-
-    std::vector<Data_Time> sample3;
-    sample3.push_back(Data_Time(3.0,0.5));
-    sample3.push_back(Data_Time(1.0,2.0));
-    sample3.push_back(Data_Time(2.5,2.2));
-    sample3.push_back(Data_Time(3.0,3.0));
-    sample3.push_back(Data_Time(5.0,4.0));
-    sample3.push_back(Data_Time(4.5,5.0));
-    sample3.push_back(Data_Time(3.0,6.5));
-    sample3.push_back(Data_Time(2.0,7.0));
-    sample3.push_back(Data_Time(1.0,10));
-    SpecificData *a3 = new SpecificData(3,"Dia diem Adlk", sample3);
-
-    std::vector<SpecificData*> avec;
-    avec.push_back(a1);
-    avec.push_back(a2);
-    avec.push_back(a3);
-
-    m_chartView->chart()->deleteLater();
-    m_chartView->setChart(createLineChart(avec,24,10));
-    delete a1;
-    delete a2;
-    delete a3;
-    setupFontChart(m_chartView->chart());
-
-    //Thay doi theme
-    cmbBox_theme->currentIndexChanged(cmbBox_theme->currentIndex());
-
-}
-
-void DetailWidget::viewFileData()
-{
-    m_tooltip = 0;
-    std::vector<Data_Time> sample;
-    sample.push_back(Data_Time(8.0,1.0));
-    sample.push_back(Data_Time(5.0,1.5));
-    sample.push_back(Data_Time(6.5,2.5));
-    sample.push_back(Data_Time(8.0,3.0));
-    sample.push_back(Data_Time(6.0,4.5));
-    sample.push_back(Data_Time(2.5,5.5));
-    sample.push_back(Data_Time(4.0,6.0));
-    sample.push_back(Data_Time(3.0,7.5));
-    sample.push_back(Data_Time(1.0,9.5));
-    std::vector<Data_Time> sample2;
-    sample2.push_back(Data_Time(3.0,0.5));
-    sample2.push_back(Data_Time(7.0,2.0));
-    sample2.push_back(Data_Time(6.5,2.2));
-    sample2.push_back(Data_Time(5.0,3.0));
-    sample2.push_back(Data_Time(6.0,4.0));
-    sample2.push_back(Data_Time(7.5,5.0));
-    sample2.push_back(Data_Time(9.0,6.5));
-    sample2.push_back(Data_Time(8.0,7.0));
-    sample2.push_back(Data_Time(7.0,10));
-    std::vector<std::vector<Data_Time>> asample;
-    asample.push_back(sample);
-    asample.push_back(sample2);
-    m_chartView->chart()->deleteLater();
-    //m_chartView->setChart(createLineChart(asample,10,10));
-
-    setupFontChart(m_chartView->chart());
-}
-
-void DetailWidget::showPresentData()
-{
-
-}
-
-void DetailWidget::compareData()
-{
-
-}
-
-void DetailWidget::hideComparison()
-{
-
-}
-
-void DetailWidget::tooltip(QPointF point, bool state)
-{
-    qDebug() << "Hover do am";
-    if (m_tooltip == 0)
-        m_tooltip = new Callout(m_chartView->chart());
-
-    if (state) {
-        int minute = (int)((point.x()-(int)point.x())*60);
-        m_tooltip->setText(QString("T.Gian: %1h%2p \nĐ.Ẩm: %3 (%)").arg(round(point.x())).arg(minute).arg(round(point.y()*100)/100));
-
-        m_tooltip->setAnchor(point);
-        m_tooltip->setZValue(11);
-        m_tooltip->updateGeometry();
-        m_tooltip->show();
-    } else {
-        m_tooltip->hide();
-    }
-}
-
-void DetailWidget::tooltip_temp(QPointF point, bool state)
-{
-    qDebug() << "Hover nhiet";
-    if (m_tooltip == 0)
-        m_tooltip = new Callout(m_chartView->chart());
-
-    if (state) {
-        int minute = (int)((point.x()-(int)point.x())*60);
-        m_tooltip->setText(QString("T.Gian: %1h%2p \nN.Độ: %3 (°C)").arg(round(point.x())).arg(minute).arg(round(point.y()*60)/100));
-        m_tooltip->setAnchor(point);
-        m_tooltip->setZValue(11);
-        m_tooltip->updateGeometry();
-        m_tooltip->show();
-    } else {
-        m_tooltip->hide();
-    }
-}
-
-void DetailWidget::changeTheme(int index)
-{
-
-    switch (index) {
-    case 0:
-        m_charTheme = QChart::ChartThemeLight;
-        break;
-    case 1:
-        m_charTheme = QChart::ChartThemeDark;
-        break;
-    case 2:
-        m_charTheme = QChart::ChartThemeBlueCerulean;
-        break;
-    case 3:
-        m_charTheme = QChart::ChartThemeBrownSand;
-        break;
-    case 4:
-        m_charTheme = QChart::ChartThemeBlueNcs;
-        break;
-    case 5:
-        m_charTheme = QChart::ChartThemeHighContrast;
-        break;
-    case 6:
-        m_charTheme = QChart::ChartThemeBlueIcy;
-        break;
-    case 7:
-        m_charTheme = QChart::ChartThemeQt;
-        break;
-    default:
-        break;
-    }
-
-        m_chartView->chart()->setTheme(m_charTheme);
-
-        setupFontChart(m_chartView->chart());
-
-        // Set palette colors based on selected theme
-        //![8]
-        QPalette pal = window()->palette();
-        if (m_charTheme == QChart::ChartThemeLight) {
-            pal.setColor(QPalette::Window, QRgb(0xf0f0f0));
-            pal.setColor(QPalette::WindowText, QRgb(0x404044));
-        //![8]
-        } else if (m_charTheme == QChart::ChartThemeDark) {
-            pal.setColor(QPalette::Window, QRgb(0x40434a));
-            pal.setColor(QPalette::WindowText, QRgb(0xd6d6d6));
-        } else if (m_charTheme == QChart::ChartThemeBlueCerulean) {
-            pal.setColor(QPalette::Window, QRgb(0x0D6299));
-            pal.setColor(QPalette::WindowText, QRgb(0xd6d6d6));
-        } else if (m_charTheme == QChart::ChartThemeBrownSand) {
-            pal.setColor(QPalette::Window, QRgb(0x9e8965));
-            pal.setColor(QPalette::WindowText, QRgb(0x404044));
-        } else if (m_charTheme == QChart::ChartThemeBlueNcs) {
-            pal.setColor(QPalette::Window, QRgb(0x018bba));
-            pal.setColor(QPalette::WindowText, QRgb(0x404044));
-        } else if (m_charTheme == QChart::ChartThemeHighContrast) {
-            pal.setColor(QPalette::Window, QRgb(0xffab03));
-            pal.setColor(QPalette::WindowText, QRgb(0x181818));
-        } else if (m_charTheme == QChart::ChartThemeBlueIcy) {
-            pal.setColor(QPalette::Window, QRgb(0xcee7f0));
-            pal.setColor(QPalette::WindowText, QRgb(0x404044));
-        } else {
-            pal.setColor(QPalette::Window, QRgb(0xf0f0f0));
-            pal.setColor(QPalette::WindowText, QRgb(0x404044));
-        }
-        frame_content->setPalette(pal);
-        frame_option->setPalette(pal);
-        window()->setPalette(pal);
-    }
-

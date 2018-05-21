@@ -64,7 +64,7 @@ public:
 
     QChart *createSplineChart(std::vector<std::vector<Data_Time>> dateTimeVector, int valueMax, int valueCount) const;      //Tao bieu do duong cong
     QChart *createScatterChart(std::vector<std::vector<Data_Time>> dateTimeVector, int valueMax, int valueCount) const;     //Tao bieu do cham
-
+    std::vector<Data_Time> creatDataTime();
 signals:
 
 public slots:

@@ -25,7 +25,8 @@ SpecificData::SpecificData(int dataType, QString deviceName, std::vector<Data_Ti
 
 SpecificData::~SpecificData()
 {
-    qDebug() << "huy spec Data";
+    qDebug() << "huy spec Data" << m_dataTypeName << m_deviceName ;
+    m_dataTimeVector.clear();
 }
 
 
