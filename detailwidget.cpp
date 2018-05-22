@@ -43,7 +43,86 @@ void DetailWidget::setupFontChart(QChart *chart) const
     chart->legend()->setFont(QFont("Calibri", 10));
 }
 
-QChart *DetailWidget::createLineChart(std::vector<SpecificData *> specDataVector, int valueMax, int valueCount) const
+QChart *DetailWidget::createLineChart(std::vector<SpecificData *> specDataVector) const
+{
+    QChart *chart = new QChart();
+    chart->setContentsMargins(-25,-25,-25,-25);
+
+    for (uint i = 0; i < specDataVector.size(); i++)  {
+        QScatterSeries *series2 = new QScatterSeries(chart);
+        series2->setMarkerSize(5.0);
+        QLineSeries *series = new QLineSeries(chart);
+
+        for (uint j = 0; j<specDataVector[i]->dataTimeVector().size();j++)
+        {
+            series->append(specDataVector[i]->dataTimeVector()[j].second, specDataVector[i]->dataTimeVector()[j].first);
+            series2->append(specDataVector[i]->dataTimeVector()[j].second, specDataVector[i]->dataTimeVector()[j].first);
+        }
+
+        series->setName(specDataVector[i]->deviceName() + QString(": ") + specDataVector[i]->dataTypeName());
+        chart->addSeries(series);
+        chart->addSeries(series2);
+        chart->legend()->markers(series2)[0]->setVisible(false);
+        if(specDataVector[i]->dataType() == 1 || specDataVector[i]->dataType() == 2) // Neu series cua do am thi ket noi toi tooltip
+        {
+            //Connect signal re chuot cua series toi callout
+            connect(series, &QSplineSeries::hovered, this, &DetailWidget::tooltip);
+            connect(series2, &QSplineSeries::hovered, this, &DetailWidget::tooltip);
+        } else // Neu series cua nhiet do thi ket noi toi tooltip_temp
+        {
+            //Connect signal re chuot cua series toi callout
+            connect(series, &QSplineSeries::hovered, this, &DetailWidget::tooltip_temp);
+            connect(series2, &QSplineSeries::hovered, this, &DetailWidget::tooltip_temp);
+        }
+    }
+    //![2]
+
+    //![3]
+    chart->createDefaultAxes();
+    //Dua theo dateMode de cai dat range cho truc hoanh
+    switch (cmbBox_dateMode->currentIndex()) {
+    case 0:
+        chart->axisX()->setRange(0, 24);
+        static_cast<QValueAxis *>(chart->axisX())->setTickCount(13);
+        break;
+    case 1:
+        chart->axisX()->setRange(-3, 3);
+        static_cast<QValueAxis *>(chart->axisX())->setTickCount(7);
+        break;
+    case 2:
+        chart->axisX()->setRange(1, 31);
+        static_cast<QValueAxis *>(chart->axisX())->setTickCount(11);
+        break;
+    default:
+        break;
+    }
+
+
+    chart->axisY()->setRange(0, 100);
+    chart->axisX()->setTitleText("Thời gian (h)");
+    chart->axisY()->setTitleText("Độ ẩm (%)");
+
+    QValueAxis *axisTemp = new QValueAxis();
+    axisTemp->setRange(0,60);
+    axisTemp->setTitleText("Nhiệt độ (độ C)");
+    chart->addAxis(axisTemp,Qt::AlignRight);
+
+    //![3]
+    //![4]
+    // Add space to label to add space between labels and axis
+    static_cast<QValueAxis *>(chart->axisY())->setLabelFormat("%.1f  ");
+
+
+    //![4]
+    //!
+    //!
+    //chart->setFont(QFont("Calibri", 11));
+
+    return chart;
+
+}
+
+QChart *DetailWidget::createSplineChart(std::vector<SpecificData *> specDataVector) const
 {
     QChart *chart = new QChart();
     chart->setContentsMargins(-25,-25,-25,-25);
@@ -79,13 +158,28 @@ QChart *DetailWidget::createLineChart(std::vector<SpecificData *> specDataVector
 
     //![3]
     chart->createDefaultAxes();
-    chart->axisX()->setRange(0, valueMax);
-    chart->axisY()->setRange(0, valueCount);
+    int axisXYrange;
+    //Dua theo dateMode de cai dat range cho truc hoanh
+    switch (cmbBox_dateMode->currentIndex()) {
+    case 0:
+        axisXYrange = 24;
+        break;
+    case 1:
+        axisXYrange = 7;
+        break;
+    case 2:
+        axisXYrange = 31;
+        break;
+    default:
+        break;
+    }
+
+    chart->axisY()->setRange(0, 100);
     chart->axisX()->setTitleText("Thời gian (h)");
     chart->axisY()->setTitleText("Độ ẩm (%)");
 
     QValueAxis *axisTemp = new QValueAxis();
-    axisTemp->setRange(0,6);
+    axisTemp->setRange(0,60);
     axisTemp->setTitleText("Nhiệt độ (độ C)");
     chart->addAxis(axisTemp,Qt::AlignRight);
 
@@ -93,94 +187,92 @@ QChart *DetailWidget::createLineChart(std::vector<SpecificData *> specDataVector
     //![4]
     // Add space to label to add space between labels and axis
     static_cast<QValueAxis *>(chart->axisY())->setLabelFormat("%.1f  ");
-    static_cast<QValueAxis *>(chart->axisX())->setTickCount(valueMax/2+1);
+    static_cast<QValueAxis *>(chart->axisX())->setTickCount(axisXYrange/2+1);
     //![4]
     //!
     //!
     //chart->setFont(QFont("Calibri", 11));
 
     return chart;
-
 }
 
-QChart *DetailWidget::createSplineChart(std::vector<std::vector<Data_Time>> dateTimeVector, int valueMax, int valueCount) const
+QChart *DetailWidget::createScatterChart(std::vector<SpecificData *> specDataVector) const
 {
-    //![1]
     QChart *chart = new QChart();
-    chart->setTitle("Line chart");
-    //![1]
+    chart->setContentsMargins(-25,-25,-25,-25);
 
-    //![2]
-    QString name("Series ");
-    int nameIndex = 0;
-    for (std::vector<std::vector<Data_Time>>::iterator it = dateTimeVector.begin(); it != dateTimeVector.end(); it++)  {
+    for (uint i = 0; i<specDataVector.size();i++)  {
         QScatterSeries *series2 = new QScatterSeries(chart);
         series2->setMarkerSize(5.0);
-        QSplineSeries *series = new QSplineSeries(chart);
-        for (std::vector<Data_Time>::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++)
+        QLineSeries *series = new QLineSeries(chart);
+
+        for (uint j = 0; j<specDataVector[i]->dataTimeVector().size();j++)
         {
-            series->append((*it2).second, (*it2).first);
-            series2->append((*it2).second, (*it2).first);
+            series->append(specDataVector[i]->dataTimeVector()[j].second, specDataVector[i]->dataTimeVector()[j].first);
+            series2->append(specDataVector[i]->dataTimeVector()[j].second, specDataVector[i]->dataTimeVector()[j].first);
         }
-        series->setName(name + QString::number(nameIndex));
-        series2->setName(name + QString::number(nameIndex));
-        nameIndex++;
+
+        series->setName(specDataVector[i]->deviceName() + QString(": ") + specDataVector[i]->dataTypeName());
         chart->addSeries(series);
         chart->addSeries(series2);
-    }
-    //![2]
-
-    //![3]
-    chart->createDefaultAxes();
-    chart->axisX()->setRange(0, valueMax);
-    chart->axisY()->setRange(0, valueCount);
-    //![3]
-    //![4]
-    // Add space to label to add space between labels and axis
-    static_cast<QValueAxis *>(chart->axisY())->setLabelFormat("%.1f  ");
-    //![4]
-
-    return chart;
-}
-
-QChart *DetailWidget::createScatterChart(std::vector<std::vector<Data_Time>> dateTimeVector, int valueMax, int valueCount) const
-{
-    //![1]
-    QChart *chart = new QChart();
-    chart->setTitle("Line chart");
-    //![1]
-
-    //![2]
-    QString name("Series ");
-    int nameIndex = 0;
-    for (std::vector<std::vector<Data_Time>>::iterator it = dateTimeVector.begin(); it != dateTimeVector.end(); it++)  {
-        QScatterSeries *series2 = new QScatterSeries(chart);
-        series2->setMarkerSize(10.0);
-        for (std::vector<Data_Time>::iterator it2 = (*it).begin(); it2 != (*it).end(); it2++)
+        chart->legend()->markers(series2)[0]->setVisible(false);
+        if(specDataVector[i]->dataType() == 1 || specDataVector[i]->dataType() == 2) // Neu series cua do am thi ket noi toi tooltip
         {
-            series2->append((*it2).second, (*it2).first);
+            //Connect signal re chuot cua series toi callout
+            connect(series, &QSplineSeries::hovered, this, &DetailWidget::tooltip);
+            connect(series2, &QSplineSeries::hovered, this, &DetailWidget::tooltip);
+        } else // Neu series cua nhiet do thi ket noi toi tooltip_temp
+        {
+            //Connect signal re chuot cua series toi callout
+            connect(series, &QSplineSeries::hovered, this, &DetailWidget::tooltip_temp);
+            connect(series2, &QSplineSeries::hovered, this, &DetailWidget::tooltip_temp);
         }
-        series2->setName(name + QString::number(nameIndex));
-        nameIndex++;
-        chart->addSeries(series2);
     }
     //![2]
 
     //![3]
     chart->createDefaultAxes();
-    chart->axisX()->setRange(0, valueMax);
-    chart->axisY()->setRange(0, valueCount);
+    int axisXYrange;
+    //Dua theo dateMode de cai dat range cho truc hoanh
+    switch (cmbBox_dateMode->currentIndex()) {
+    case 0:
+        axisXYrange = 24;
+        break;
+    case 1:
+        axisXYrange = 7;
+        break;
+    case 2:
+        axisXYrange = 31;
+        break;
+    default:
+        break;
+    }
+
+    chart->axisY()->setRange(0, 100);
+    chart->axisX()->setTitleText("Thời gian (h)");
+    chart->axisY()->setTitleText("Độ ẩm (%)");
+
+    QValueAxis *axisTemp = new QValueAxis();
+    axisTemp->setRange(0,60);
+    axisTemp->setTitleText("Nhiệt độ (độ C)");
+    chart->addAxis(axisTemp,Qt::AlignRight);
+
     //![3]
     //![4]
     // Add space to label to add space between labels and axis
     static_cast<QValueAxis *>(chart->axisY())->setLabelFormat("%.1f  ");
+    static_cast<QValueAxis *>(chart->axisX())->setTickCount(axisXYrange/2+1);
     //![4]
+    //!
+    //!
+    //chart->setFont(QFont("Calibri", 11));
 
     return chart;
 }
 
 std::vector<Data_Time> DetailWidget::creatDataTime()
 {
+
     std::vector<Data_Time> dataTimeVector;
     dataTimeVector.push_back(Data_Time(4.0,1.0));
     dataTimeVector.push_back(Data_Time(3.0,1.5));
@@ -198,19 +290,21 @@ void DetailWidget::drawChart()
 {
     m_tooltip = 0;
     QString deviceName = cmbBox_device->currentText();
+    int timeMode = cmbBox_dateMode->currentIndex();
+    QDate date = dateEdit_device1->date();
     std::vector<SpecificData*> specDataVector;
     QCheckBox *checkBoxes[4] = {checkBox_humi_soil, checkBox_humi_envi, checkBox_temp_soil, checkBox_temp_envi };
     for(int i = 0; i < 4; i++)
     {
         if(checkBoxes[i]->isChecked())
         {
-            SpecificData *specData = new SpecificData(i+1,deviceName,creatDataTime()); //should continue here.....
+            SpecificData *specData = new SpecificData(i+1,deviceName,timeMode,date);
             specDataVector.push_back(specData);
         }
     }
 
     m_chartView->chart()->deleteLater();
-    m_chartView->setChart(createLineChart(specDataVector,24,10));
+    m_chartView->setChart(createLineChart(specDataVector));
     //Giai phong bo nho
     for (std::vector< SpecificData* >::iterator it = specDataVector.begin() ; it != specDataVector.end(); ++it)
     {

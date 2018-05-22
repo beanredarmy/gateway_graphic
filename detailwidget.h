@@ -60,10 +60,10 @@ public:
     void setupWidgets();
     void setupOptions();
     void setupFontChart(QChart *chart) const;
-    QChart *createLineChart(std::vector<SpecificData*> specDataVector, int valueMax, int valueCount) const;        //Tao bieu do duong thang
+    QChart *createLineChart(std::vector<SpecificData*> specDataVector) const;        //Tao bieu do duong thang
 
-    QChart *createSplineChart(std::vector<std::vector<Data_Time>> dateTimeVector, int valueMax, int valueCount) const;      //Tao bieu do duong cong
-    QChart *createScatterChart(std::vector<std::vector<Data_Time>> dateTimeVector, int valueMax, int valueCount) const;     //Tao bieu do cham
+    QChart *createSplineChart(std::vector<SpecificData*> specDataVector) const;      //Tao bieu do duong cong
+    QChart *createScatterChart(std::vector<SpecificData*> specDataVector) const;     //Tao bieu do cham
     std::vector<Data_Time> creatDataTime();
 signals:
 

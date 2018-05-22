@@ -7,7 +7,7 @@ typedef QPair<float ,float> Data_Time;
 class SpecificData
 {
 public:
-    SpecificData(int dataType, QString deviceName, std::vector<Data_Time> dataTimeVector);
+    SpecificData(int dataType, QString deviceName, int timeMode, QDate date);
     ~SpecificData();
 
 
@@ -27,8 +27,11 @@ private:
     int m_dataType;
     QString m_dataTypeName;
     QString m_deviceName;
+    int m_timeMode;
+    int m_day;
+    int m_month;
+    int m_year;
     std::vector<Data_Time> m_dataTimeVector;
-
 
 };
 

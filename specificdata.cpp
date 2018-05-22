@@ -1,9 +1,12 @@
 #include "specificdata.h"
 
-SpecificData::SpecificData(int dataType, QString deviceName, std::vector<Data_Time> dataTimeVector) :
+SpecificData::SpecificData(int dataType, QString deviceName, int timeMode, QDate date) :
     m_dataType(dataType),
     m_deviceName(deviceName),
-    m_dataTimeVector(dataTimeVector)
+    m_timeMode(timeMode),
+    m_day(date.day()),
+    m_month(date.month()),
+    m_year(date.year())
 {
     switch (dataType) {
     case 1:
@@ -21,6 +24,16 @@ SpecificData::SpecificData(int dataType, QString deviceName, std::vector<Data_Ti
     default:
         break;
     }
+
+    QString path = "/home/bean/gatewaydata/"+ deviceName + "/" +  QString::number(m_year)+ "/" + QString::number(m_month) ;//+  "/" + QString::number(m_day);
+    QDir mDir(path);
+     qDebug() << path;
+    if(mDir.exists())
+    {
+        qDebug() << "available";
+    }else qDebug() << "not avaiable";
+
+
 }
 
 SpecificData::~SpecificData()
