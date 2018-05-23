@@ -25,12 +25,25 @@ SpecificData::SpecificData(int dataType, QString deviceName, int timeMode, QDate
         break;
     }
 
-    QString path = "/home/bean/gatewaydata/"+ deviceName + "/" +  QString::number(m_year)+ "/" + QString::number(m_month) ;//+  "/" + QString::number(m_day);
-    QDir mDir(path);
+    QString path = "/home/bean/gatewaydata/"+ deviceName + "/" +  QString::number(m_year)+ "/" + QString::number(m_month) +  "/" + QString::number(m_day);
+    QFile mFile(path);
      qDebug() << path;
-    if(mDir.exists())
+     //Kiem tra file co ton tai ko
+    if(mFile.exists())
     {
         qDebug() << "available";
+        //Kiem tra file co doc duoc khong
+        if(mFile.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            QTextStream in(&mFile);
+            QString line;
+            do
+            {
+                line = in.readLine();
+                qDebug() << line;
+            }while(!line.isNull());
+            mFile.close();
+        }
     }else qDebug() << "not avaiable";
 
 

@@ -20,14 +20,13 @@ public:
 
     void createAddTabButton();
     void connectFileToClass();
-
+    void furtherSetup();
 
 public slots:
     void removeTab(int tabOrder);
     void createTab();
     void changeTabTitle(QString titleName);
 private:
-    std::vector<DetailWidget*> m_dtWidgetVector;
     Ui::MainWindow *ui;
     QPushButton* m_addTabButton;
 };

@@ -1,6 +1,6 @@
 #ifndef DETAILWIDGET_H
 #define DETAILWIDGET_H
-
+#include <QtCore>
 #include <QWidget>
 #include <QLayout>
 #include <QFrame>
@@ -12,40 +12,19 @@
 #include <QPushButton>
 #include <QApplication>
 #include <QCheckBox>
-#include <QDebug>
 #include <QCategoryAxis>
 #include <QtWidgets/QGraphicsTextItem>
 #include <QGraphicsLayout>
-#include <QtWidgets/QWidget>
 #include <QtCharts/QChartGlobal>
-#include <QtCharts/QChartView>
 #include <QChartView>
-#include <QtCharts/QPieSeries>
-#include <QtCharts/QPieSlice>
-#include <QtCharts/QAbstractBarSeries>
-#include <QtCharts/QPercentBarSeries>
-#include <QtCharts/QStackedBarSeries>
-#include <QtCharts/QBarSeries>
-#include <QtCharts/QBarSet>
 #include <QtCharts/QLineSeries>
 #include <QtCharts/QSplineSeries>
 #include <QtCharts/QScatterSeries>
-#include <QtCharts/QAreaSeries>
 #include <QtCharts/QLegend>
-#include <QtWidgets/QGridLayout>
-#include <QtWidgets/QFormLayout>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QSpinBox>
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QGroupBox>
-#include <QtWidgets/QLabel>
-#include <QtCore/QRandomGenerator>
 #include <QtCharts/QBarCategoryAxis>
 #include <QtWidgets/QApplication>
 #include <QtCharts/QValueAxis>
-#include <QDir>
 #include <QLegendMarker>
-#include <QLegend>
 #include "specificdata.h"
 #include "callout.h"
 
@@ -60,10 +39,9 @@ public:
     void setupWidgets();
     void setupOptions();
     void setupFontChart(QChart *chart) const;
-    QChart *createLineChart(std::vector<SpecificData*> specDataVector) const;        //Tao bieu do duong thang
-
-    QChart *createSplineChart(std::vector<SpecificData*> specDataVector) const;      //Tao bieu do duong cong
-    QChart *createScatterChart(std::vector<SpecificData*> specDataVector) const;     //Tao bieu do cham
+    QChart *createLineChart(std::vector<SpecificData*> specDataVector) const;
+    QChart *createSplineChart(std::vector<SpecificData*> specDataVector) const;
+    QChart *createScatterChart(std::vector<SpecificData*> specDataVector) const;
     std::vector<Data_Time> creatDataTime();
 signals:
 

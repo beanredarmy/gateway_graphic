@@ -1,6 +1,7 @@
 #include "detailwidget.h"
 
 QStringList  DetailWidget::m_deviceList;
+
 DetailWidget::DetailWidget(QWidget *parent) : QWidget(parent)
 {
     setupWidgets();
@@ -20,13 +21,18 @@ DetailWidget::~DetailWidget()
 
 void DetailWidget::setupOptions()
 {
+    //setup date mode, graph mode and theme available options.
     cmbBox_dateMode->addItems(QStringList() << "Ngày" << "7 Ngày" << "Tháng");
     cmbBox_graphMode->addItems(QStringList() << "Line" << "Spline" << "Scatter");
     cmbBox_theme->addItems(QStringList() << "Light" << "Dark" << "Blue Cerulean" << "Brown Sand" << "Blue NCS" << "High Contrast" << "Blue Icy" << "Qt");
+    //change theme when the value of theme combox box changed
     connect(cmbBox_theme, SIGNAL (currentIndexChanged(int)),this, SLOT (changeTheme(int)));
+
+    //add all available device names to the comboboxes
     cmbBox_device->addItems(m_deviceList);
     cmbBox_device2->addItems(m_deviceList);
     cmbBox_device3->addItems(m_deviceList);
+    //set all date edit to current day
     dateEdit_device1->setDate(QDate::currentDate());
     dateEdit_device2->setDate(QDate::currentDate());
     dateEdit_device3->setDate(QDate::currentDate());
@@ -34,12 +40,14 @@ void DetailWidget::setupOptions()
 
 void DetailWidget::setupFontChart(QChart *chart) const
 {
+    //change font of all axes
     for(int i=0; i<chart->axes().count(); ++i )
     {
         chart->axes()[i]->setTitleFont(QFont("Calibri", 11, QFont::Bold));
         chart->axes()[i]->setLabelsFont(QFont("Calibri", 11));
 
     }
+    //and change font of legend
     chart->legend()->setFont(QFont("Calibri", 10));
 }
 
@@ -48,75 +56,69 @@ QChart *DetailWidget::createLineChart(std::vector<SpecificData *> specDataVector
     QChart *chart = new QChart();
     chart->setContentsMargins(-25,-25,-25,-25);
 
+    //iterate all specificData
     for (uint i = 0; i < specDataVector.size(); i++)  {
+        //create scatter and line serie
         QScatterSeries *series2 = new QScatterSeries(chart);
         series2->setMarkerSize(5.0);
         QLineSeries *series = new QLineSeries(chart);
-
+        //iterate all (date,time) elements of specificData
         for (uint j = 0; j<specDataVector[i]->dataTimeVector().size();j++)
         {
+            //add each elements to series
             series->append(specDataVector[i]->dataTimeVector()[j].second, specDataVector[i]->dataTimeVector()[j].first);
             series2->append(specDataVector[i]->dataTimeVector()[j].second, specDataVector[i]->dataTimeVector()[j].first);
         }
-
+        //set name for series based on device name and data type
         series->setName(specDataVector[i]->deviceName() + QString(": ") + specDataVector[i]->dataTypeName());
+        //add series to chart
         chart->addSeries(series);
         chart->addSeries(series2);
+        //hide legend of scatter serie
         chart->legend()->markers(series2)[0]->setVisible(false);
+        //If specData is humidity then connect to slot tooltip of humidity
         if(specDataVector[i]->dataType() == 1 || specDataVector[i]->dataType() == 2) // Neu series cua do am thi ket noi toi tooltip
         {
-            //Connect signal re chuot cua series toi callout
             connect(series, &QSplineSeries::hovered, this, &DetailWidget::tooltip);
             connect(series2, &QSplineSeries::hovered, this, &DetailWidget::tooltip);
-        } else // Neu series cua nhiet do thi ket noi toi tooltip_temp
+        } else // else if specData is temperature then connect to slot tooltip of temperature
         {
-            //Connect signal re chuot cua series toi callout
             connect(series, &QSplineSeries::hovered, this, &DetailWidget::tooltip_temp);
             connect(series2, &QSplineSeries::hovered, this, &DetailWidget::tooltip_temp);
         }
     }
-    //![2]
 
-    //![3]
+    //create axisX and axisY by default
     chart->createDefaultAxes();
-    //Dua theo dateMode de cai dat range cho truc hoanh
+    //Set range of axisX based on date mode
     switch (cmbBox_dateMode->currentIndex()) {
-    case 0:
+    case 0://if mode is day
         chart->axisX()->setRange(0, 24);
         static_cast<QValueAxis *>(chart->axisX())->setTickCount(13);
         break;
-    case 1:
+    case 1: //if mode is 7 days
         chart->axisX()->setRange(-3, 3);
         static_cast<QValueAxis *>(chart->axisX())->setTickCount(7);
         break;
-    case 2:
+    case 2://if mode is month
         chart->axisX()->setRange(1, 31);
         static_cast<QValueAxis *>(chart->axisX())->setTickCount(11);
         break;
     default:
         break;
     }
-
-
+    //axisY is a humidity axis (from 0 to 100 %)
     chart->axisY()->setRange(0, 100);
     chart->axisX()->setTitleText("Thời gian (h)");
     chart->axisY()->setTitleText("Độ ẩm (%)");
-
+    //create temperature axis (from 0 to 60 degree)
     QValueAxis *axisTemp = new QValueAxis();
     axisTemp->setRange(0,60);
     axisTemp->setTitleText("Nhiệt độ (độ C)");
     chart->addAxis(axisTemp,Qt::AlignRight);
 
-    //![3]
-    //![4]
     // Add space to label to add space between labels and axis
     static_cast<QValueAxis *>(chart->axisY())->setLabelFormat("%.1f  ");
-
-
-    //![4]
-    //!
-    //!
-    //chart->setFont(QFont("Calibri", 11));
 
     return chart;
 

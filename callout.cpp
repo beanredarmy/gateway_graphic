@@ -45,7 +45,6 @@ Callout::Callout(QChart *chart):
 Callout::~Callout()
 {
     qDebug() << "Huy callout";
-  //  delete m_chart;
 }
 
 QRectF Callout::boundingRect() const
