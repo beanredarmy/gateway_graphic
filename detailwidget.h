@@ -42,7 +42,6 @@ public:
     QChart *createLineChart(std::vector<SpecificData*> specDataVector) const;
     QChart *createSplineChart(std::vector<SpecificData*> specDataVector) const;
     QChart *createScatterChart(std::vector<SpecificData*> specDataVector) const;
-    std::vector<Data_Time> creatDataTime();
 signals:
 
 public slots:

@@ -272,30 +272,17 @@ QChart *DetailWidget::createScatterChart(std::vector<SpecificData *> specDataVec
     return chart;
 }
 
-std::vector<Data_Time> DetailWidget::creatDataTime()
-{
-
-    std::vector<Data_Time> dataTimeVector;
-    dataTimeVector.push_back(Data_Time(4.0,1.0));
-    dataTimeVector.push_back(Data_Time(3.0,1.5));
-    dataTimeVector.push_back(Data_Time(2.5,2.5));
-    dataTimeVector.push_back(Data_Time(1.0,3.0));
-    dataTimeVector.push_back(Data_Time(4.0,4.5));
-    dataTimeVector.push_back(Data_Time(5.5,5.5));
-    dataTimeVector.push_back(Data_Time(6.0,6.0));
-    dataTimeVector.push_back(Data_Time(8.0,7.5));
-    dataTimeVector.push_back(Data_Time(9.0,9.5));
-    return dataTimeVector;
-}
-
 void DetailWidget::drawChart()
 {
     m_tooltip = 0;
+    //get infor from comboboxes and dateEdit
     QString deviceName = cmbBox_device->currentText();
     int timeMode = cmbBox_dateMode->currentIndex();
     QDate date = dateEdit_device1->date();
+
     std::vector<SpecificData*> specDataVector;
     QCheckBox *checkBoxes[4] = {checkBox_humi_soil, checkBox_humi_envi, checkBox_temp_soil, checkBox_temp_envi };
+    //Create specific data based on checkbox checked
     for(int i = 0; i < 4; i++)
     {
         if(checkBoxes[i]->isChecked())
@@ -304,19 +291,21 @@ void DetailWidget::drawChart()
             specDataVector.push_back(specData);
         }
     }
-
+    //remove previous chart
     m_chartView->chart()->deleteLater();
     m_chartView->setChart(createLineChart(specDataVector));
-    //Giai phong bo nho
+    //Release memory allocated for specific data
     for (std::vector< SpecificData* >::iterator it = specDataVector.begin() ; it != specDataVector.end(); ++it)
     {
         delete (*it);
     }
+    //and clear vector
     specDataVector.clear();
 
-    //Cai dat lai font
+    //re-setup font chart
     setupFontChart(m_chartView->chart());
-    //Thay doi theme
+
+    //call currentIndexChanged function to change theme immediately
     cmbBox_theme->currentIndexChanged(cmbBox_theme->currentIndex());
 
 }
@@ -340,16 +329,18 @@ void DetailWidget::hideComparison()
 
 }
 
+//tooltip for humidity
 void DetailWidget::tooltip(QPointF point, bool state)
 {
-    qDebug() << "Hover do am";
+    //check whether tooltip is created?
     if (m_tooltip == 0)
         m_tooltip = new Callout(m_chartView->chart());
 
     if (state) {
+        //get minute value from coordinate
         int minute = (int)((point.x()-(int)point.x())*60);
+        //show value and time to tooltip
         m_tooltip->setText(QString("T.Gian: %1h%2p \nĐ.Ẩm: %3 (%)").arg(round(point.x())).arg(minute).arg(round(point.y()*100)/100));
-
         m_tooltip->setAnchor(point);
         m_tooltip->setZValue(11);
         m_tooltip->updateGeometry();
@@ -359,14 +350,17 @@ void DetailWidget::tooltip(QPointF point, bool state)
     }
 }
 
+//tooltip for temperature
 void DetailWidget::tooltip_temp(QPointF point, bool state)
 {
-    qDebug() << "Hover nhiet";
+     //check whether tooltip is created?
     if (m_tooltip == 0)
         m_tooltip = new Callout(m_chartView->chart());
 
     if (state) {
+        //get minute value from coordinate
         int minute = (int)((point.x()-(int)point.x())*60);
+        //show value and time to tooltip
         m_tooltip->setText(QString("T.Gian: %1h%2p \nN.Độ: %3 (°C)").arg(round(point.x())).arg(minute).arg(round(point.y()*60)/100));
         m_tooltip->setAnchor(point);
         m_tooltip->setZValue(11);
@@ -379,7 +373,7 @@ void DetailWidget::tooltip_temp(QPointF point, bool state)
 
 void DetailWidget::changeTheme(int index)
 {
-
+    //change theme based on index of theme combobox
     switch (index) {
     case 0:
         m_charTheme = QChart::ChartThemeLight;
@@ -410,7 +404,6 @@ void DetailWidget::changeTheme(int index)
     }
 
         m_chartView->chart()->setTheme(m_charTheme);
-
         setupFontChart(m_chartView->chart());
 
         // Set palette colors based on selected theme
@@ -447,6 +440,7 @@ void DetailWidget::changeTheme(int index)
         window()->setPalette(pal);
     }
 
+//initiate and setup widgets
 void DetailWidget::setupWidgets()
 {
     QFont font;
