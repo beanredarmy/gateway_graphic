@@ -43,7 +43,7 @@ public:
     QChart *createSplineChart(std::vector<SpecificData*> specDataVector) const;
     QChart *createScatterChart(std::vector<SpecificData*> specDataVector) const;
 signals:
-
+    void sendMessToStatusBar(QString message);
 public slots:
     void drawChart();
     void viewFileData();
@@ -56,7 +56,8 @@ public slots:
 private:
     QChartView *m_chartView;
     Callout *m_tooltip;
-    QChart::ChartTheme m_charTheme;
+    QChart::ChartTheme m_chartTheme;
+
 
 public:
     static QStringList  m_deviceList;

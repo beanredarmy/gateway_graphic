@@ -8,6 +8,7 @@ class SpecificData
 {
 public:
     SpecificData(int dataType, QString deviceName, int timeMode, QDate date);
+    SpecificData(QString deviceName, QDate date);
     ~SpecificData();
 
 
@@ -23,7 +24,14 @@ public:
     int dataType() const;
     void setDataType(int dataType);
 
+    std::vector<Data_Time> getDataTimeVector(int dataType, int timeMode);
+    Data_Time getLastValue(int dataType);
+    float getAverageValue(int dataType);
+    Data_Time getMinValue(int dataType);
+    Data_Time getMaxValue(int dataType);
+
 private:
+
     int m_dataType;
     QString m_dataTypeName;
     QString m_deviceName;

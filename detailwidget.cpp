@@ -8,7 +8,7 @@ DetailWidget::DetailWidget(QWidget *parent) : QWidget(parent)
     setupOptions();
     connect(pushButton_OK, SIGNAL (clicked()),this, SLOT (drawChart()));
     connect(pushButton_showData, SIGNAL (clicked()),this, SLOT (viewFileData()));
-
+    connect(pushButton_viewNow, SIGNAL (clicked()),this, SLOT (showPresentData()));
 }
 
 DetailWidget::~DetailWidget()
@@ -22,7 +22,7 @@ DetailWidget::~DetailWidget()
 void DetailWidget::setupOptions()
 {
     //setup date mode, graph mode and theme available options.
-    cmbBox_dateMode->addItems(QStringList() << "Ngày" << "7 Ngày" << "Tháng");
+    cmbBox_dateMode->addItems(QStringList() << "Ngày/CT" << "Ngày/TB" << "7 Ngày" << "Tháng");
     cmbBox_graphMode->addItems(QStringList() << "Line" << "Spline" << "Scatter");
     cmbBox_theme->addItems(QStringList() << "Light" << "Dark" << "Blue Cerulean" << "Brown Sand" << "Blue NCS" << "High Contrast" << "Blue Icy" << "Qt");
     //change theme when the value of theme combox box changed
@@ -96,11 +96,15 @@ QChart *DetailWidget::createLineChart(std::vector<SpecificData *> specDataVector
         chart->axisX()->setRange(0, 24);
         static_cast<QValueAxis *>(chart->axisX())->setTickCount(13);
         break;
-    case 1: //if mode is 7 days
+    case 1://if mode is day
+        chart->axisX()->setRange(0, 24);
+        static_cast<QValueAxis *>(chart->axisX())->setTickCount(13);
+        break;
+    case 2: //if mode is 7 days
         chart->axisX()->setRange(-3, 3);
         static_cast<QValueAxis *>(chart->axisX())->setTickCount(7);
         break;
-    case 2://if mode is month
+    case 3://if mode is month
         chart->axisX()->setRange(1, 31);
         static_cast<QValueAxis *>(chart->axisX())->setTickCount(11);
         break;
@@ -127,73 +131,7 @@ QChart *DetailWidget::createLineChart(std::vector<SpecificData *> specDataVector
 QChart *DetailWidget::createSplineChart(std::vector<SpecificData *> specDataVector) const
 {
     QChart *chart = new QChart();
-    chart->setContentsMargins(-25,-25,-25,-25);
 
-    for (uint i = 0; i<specDataVector.size();i++)  {
-        QScatterSeries *series2 = new QScatterSeries(chart);
-        series2->setMarkerSize(5.0);
-        QLineSeries *series = new QLineSeries(chart);
-
-        for (uint j = 0; j<specDataVector[i]->dataTimeVector().size();j++)
-        {
-            series->append(specDataVector[i]->dataTimeVector()[j].second, specDataVector[i]->dataTimeVector()[j].first);
-            series2->append(specDataVector[i]->dataTimeVector()[j].second, specDataVector[i]->dataTimeVector()[j].first);
-        }
-
-        series->setName(specDataVector[i]->deviceName() + QString(": ") + specDataVector[i]->dataTypeName());
-        chart->addSeries(series);
-        chart->addSeries(series2);
-        chart->legend()->markers(series2)[0]->setVisible(false);
-        if(specDataVector[i]->dataType() == 1 || specDataVector[i]->dataType() == 2) // Neu series cua do am thi ket noi toi tooltip
-        {
-            //Connect signal re chuot cua series toi callout
-            connect(series, &QSplineSeries::hovered, this, &DetailWidget::tooltip);
-            connect(series2, &QSplineSeries::hovered, this, &DetailWidget::tooltip);
-        } else // Neu series cua nhiet do thi ket noi toi tooltip_temp
-        {
-            //Connect signal re chuot cua series toi callout
-            connect(series, &QSplineSeries::hovered, this, &DetailWidget::tooltip_temp);
-            connect(series2, &QSplineSeries::hovered, this, &DetailWidget::tooltip_temp);
-        }
-    }
-    //![2]
-
-    //![3]
-    chart->createDefaultAxes();
-    int axisXYrange;
-    //Dua theo dateMode de cai dat range cho truc hoanh
-    switch (cmbBox_dateMode->currentIndex()) {
-    case 0:
-        axisXYrange = 24;
-        break;
-    case 1:
-        axisXYrange = 7;
-        break;
-    case 2:
-        axisXYrange = 31;
-        break;
-    default:
-        break;
-    }
-
-    chart->axisY()->setRange(0, 100);
-    chart->axisX()->setTitleText("Thời gian (h)");
-    chart->axisY()->setTitleText("Độ ẩm (%)");
-
-    QValueAxis *axisTemp = new QValueAxis();
-    axisTemp->setRange(0,60);
-    axisTemp->setTitleText("Nhiệt độ (độ C)");
-    chart->addAxis(axisTemp,Qt::AlignRight);
-
-    //![3]
-    //![4]
-    // Add space to label to add space between labels and axis
-    static_cast<QValueAxis *>(chart->axisY())->setLabelFormat("%.1f  ");
-    static_cast<QValueAxis *>(chart->axisX())->setTickCount(axisXYrange/2+1);
-    //![4]
-    //!
-    //!
-    //chart->setFont(QFont("Calibri", 11));
 
     return chart;
 }
@@ -201,84 +139,85 @@ QChart *DetailWidget::createSplineChart(std::vector<SpecificData *> specDataVect
 QChart *DetailWidget::createScatterChart(std::vector<SpecificData *> specDataVector) const
 {
     QChart *chart = new QChart();
-    chart->setContentsMargins(-25,-25,-25,-25);
-
-    for (uint i = 0; i<specDataVector.size();i++)  {
-        QScatterSeries *series2 = new QScatterSeries(chart);
-        series2->setMarkerSize(5.0);
-        QLineSeries *series = new QLineSeries(chart);
-
-        for (uint j = 0; j<specDataVector[i]->dataTimeVector().size();j++)
-        {
-            series->append(specDataVector[i]->dataTimeVector()[j].second, specDataVector[i]->dataTimeVector()[j].first);
-            series2->append(specDataVector[i]->dataTimeVector()[j].second, specDataVector[i]->dataTimeVector()[j].first);
-        }
-
-        series->setName(specDataVector[i]->deviceName() + QString(": ") + specDataVector[i]->dataTypeName());
-        chart->addSeries(series);
-        chart->addSeries(series2);
-        chart->legend()->markers(series2)[0]->setVisible(false);
-        if(specDataVector[i]->dataType() == 1 || specDataVector[i]->dataType() == 2) // Neu series cua do am thi ket noi toi tooltip
-        {
-            //Connect signal re chuot cua series toi callout
-            connect(series, &QSplineSeries::hovered, this, &DetailWidget::tooltip);
-            connect(series2, &QSplineSeries::hovered, this, &DetailWidget::tooltip);
-        } else // Neu series cua nhiet do thi ket noi toi tooltip_temp
-        {
-            //Connect signal re chuot cua series toi callout
-            connect(series, &QSplineSeries::hovered, this, &DetailWidget::tooltip_temp);
-            connect(series2, &QSplineSeries::hovered, this, &DetailWidget::tooltip_temp);
-        }
-    }
-    //![2]
-
-    //![3]
-    chart->createDefaultAxes();
-    int axisXYrange;
-    //Dua theo dateMode de cai dat range cho truc hoanh
-    switch (cmbBox_dateMode->currentIndex()) {
-    case 0:
-        axisXYrange = 24;
-        break;
-    case 1:
-        axisXYrange = 7;
-        break;
-    case 2:
-        axisXYrange = 31;
-        break;
-    default:
-        break;
-    }
-
-    chart->axisY()->setRange(0, 100);
-    chart->axisX()->setTitleText("Thời gian (h)");
-    chart->axisY()->setTitleText("Độ ẩm (%)");
-
-    QValueAxis *axisTemp = new QValueAxis();
-    axisTemp->setRange(0,60);
-    axisTemp->setTitleText("Nhiệt độ (độ C)");
-    chart->addAxis(axisTemp,Qt::AlignRight);
-
-    //![3]
-    //![4]
-    // Add space to label to add space between labels and axis
-    static_cast<QValueAxis *>(chart->axisY())->setLabelFormat("%.1f  ");
-    static_cast<QValueAxis *>(chart->axisX())->setTickCount(axisXYrange/2+1);
-    //![4]
-    //!
-    //!
-    //chart->setFont(QFont("Calibri", 11));
 
     return chart;
 }
 
 void DetailWidget::drawChart()
 {
+    if(cmbBox_device->currentIndex() != 0) //If currentText != Chon
+    {
+        m_tooltip = 0;
+        //get infor from comboboxes and dateEdit
+        QString deviceName = cmbBox_device->currentText();
+        int timeMode = cmbBox_dateMode->currentIndex();
+        QDate date = dateEdit_device1->date();
+
+        std::vector<SpecificData*> specDataVector;
+        QCheckBox *checkBoxes[4] = {checkBox_humi_soil, checkBox_humi_envi, checkBox_temp_soil, checkBox_temp_envi };
+        //Create specific data based on checkbox checked
+        for(int i = 0; i < 4; i++)
+        {
+            if(checkBoxes[i]->isChecked())
+            {
+                SpecificData *specData = new SpecificData(i,deviceName,timeMode,date);
+                specDataVector.push_back(specData);
+            }
+        }
+        //remove previous chart
+        m_chartView->chart()->deleteLater();
+        m_chartView->setChart(createLineChart(specDataVector));
+        //Release memory allocated for specific data
+        for (std::vector< SpecificData* >::iterator it = specDataVector.begin() ; it != specDataVector.end(); ++it)
+        {
+            delete (*it);
+        }
+        //and clear vector
+        specDataVector.clear();
+
+        //re-setup font chart
+        setupFontChart(m_chartView->chart());
+
+        //call currentIndexChanged function to change theme immediately
+        cmbBox_theme->currentIndexChanged(cmbBox_theme->currentIndex());
+    } else emit sendMessToStatusBar(QString("Hãy chọn thiết bị"));
+
+}
+
+void DetailWidget::viewFileData()
+{
+    QString deviceName = cmbBox_device->currentText();
+    QDate date = dateEdit_device1->date();
+    QString docPath = "/home/bean/gatewaydata/"+ deviceName + "/" +  QString::number(date.year())+ "/" + QString::number(date.month()) +  "/" + QString::number(date.day());
+    QFile mFile(docPath);
+    if(mFile.exists()) //If file exist
+    {
+        qDebug() << "available";
+        QProcess::execute("gedit "+docPath);
+    }else qDebug() << "not avaiable";
+
+
+}
+
+void DetailWidget::showPresentData()
+{
+    //set date to current day and date mode to day
+    dateEdit_device1->setDate(QDate::currentDate());
+    cmbBox_dateMode->setCurrentIndex(0);
+    drawChart();
+}
+
+void DetailWidget::compareData()
+{
     m_tooltip = 0;
     //get infor from comboboxes and dateEdit
     QString deviceName = cmbBox_device->currentText();
+    QString deviceName2 = cmbBox_device2->currentText();
+    QString deviceName3 = cmbBox_device3->currentText();
     int timeMode = cmbBox_dateMode->currentIndex();
     QDate date = dateEdit_device1->date();
+    QDate date2 = dateEdit_device2->date();
+    QDate date3 = dateEdit_device3->date();
 
     std::vector<SpecificData*> specDataVector;
     QCheckBox *checkBoxes[4] = {checkBox_humi_soil, checkBox_humi_envi, checkBox_temp_soil, checkBox_temp_envi };
@@ -287,8 +226,12 @@ void DetailWidget::drawChart()
     {
         if(checkBoxes[i]->isChecked())
         {
-            SpecificData *specData = new SpecificData(i+1,deviceName,timeMode,date);
+            SpecificData *specData = new SpecificData(i,deviceName,timeMode,date);
+            SpecificData *specData2 = new SpecificData(i,deviceName2,timeMode,date2);
+            SpecificData *specData3 = new SpecificData(i,deviceName3,timeMode,date3);
             specDataVector.push_back(specData);
+            specDataVector.push_back(specData2);
+            specDataVector.push_back(specData3);
         }
     }
     //remove previous chart
@@ -307,26 +250,11 @@ void DetailWidget::drawChart()
 
     //call currentIndexChanged function to change theme immediately
     cmbBox_theme->currentIndexChanged(cmbBox_theme->currentIndex());
-
-}
-
-void DetailWidget::viewFileData()
-{
-}
-
-void DetailWidget::showPresentData()
-{
-
-}
-
-void DetailWidget::compareData()
-{
-
 }
 
 void DetailWidget::hideComparison()
 {
-
+    drawChart();
 }
 
 //tooltip for humidity
@@ -376,59 +304,59 @@ void DetailWidget::changeTheme(int index)
     //change theme based on index of theme combobox
     switch (index) {
     case 0:
-        m_charTheme = QChart::ChartThemeLight;
+        m_chartTheme = QChart::ChartThemeLight;
         break;
     case 1:
-        m_charTheme = QChart::ChartThemeDark;
+        m_chartTheme = QChart::ChartThemeDark;
         break;
     case 2:
-        m_charTheme = QChart::ChartThemeBlueCerulean;
+        m_chartTheme = QChart::ChartThemeBlueCerulean;
         break;
     case 3:
-        m_charTheme = QChart::ChartThemeBrownSand;
+        m_chartTheme = QChart::ChartThemeBrownSand;
         break;
     case 4:
-        m_charTheme = QChart::ChartThemeBlueNcs;
+        m_chartTheme = QChart::ChartThemeBlueNcs;
         break;
     case 5:
-        m_charTheme = QChart::ChartThemeHighContrast;
+        m_chartTheme = QChart::ChartThemeHighContrast;
         break;
     case 6:
-        m_charTheme = QChart::ChartThemeBlueIcy;
+        m_chartTheme = QChart::ChartThemeBlueIcy;
         break;
     case 7:
-        m_charTheme = QChart::ChartThemeQt;
+        m_chartTheme = QChart::ChartThemeQt;
         break;
     default:
         break;
     }
 
-        m_chartView->chart()->setTheme(m_charTheme);
+        m_chartView->chart()->setTheme(m_chartTheme);
         setupFontChart(m_chartView->chart());
 
         // Set palette colors based on selected theme
         //![8]
         QPalette pal = window()->palette();
-        if (m_charTheme == QChart::ChartThemeLight) {
+        if (m_chartTheme == QChart::ChartThemeLight) {
             pal.setColor(QPalette::Window, QRgb(0xf0f0f0));
             pal.setColor(QPalette::WindowText, QRgb(0x404044));
         //![8]
-        } else if (m_charTheme == QChart::ChartThemeDark) {
+        } else if (m_chartTheme == QChart::ChartThemeDark) {
             pal.setColor(QPalette::Window, QRgb(0x40434a));
             pal.setColor(QPalette::WindowText, QRgb(0xd6d6d6));
-        } else if (m_charTheme == QChart::ChartThemeBlueCerulean) {
+        } else if (m_chartTheme == QChart::ChartThemeBlueCerulean) {
             pal.setColor(QPalette::Window, QRgb(0x0D6299));
             pal.setColor(QPalette::WindowText, QRgb(0xd6d6d6));
-        } else if (m_charTheme == QChart::ChartThemeBrownSand) {
+        } else if (m_chartTheme == QChart::ChartThemeBrownSand) {
             pal.setColor(QPalette::Window, QRgb(0x9e8965));
             pal.setColor(QPalette::WindowText, QRgb(0x404044));
-        } else if (m_charTheme == QChart::ChartThemeBlueNcs) {
+        } else if (m_chartTheme == QChart::ChartThemeBlueNcs) {
             pal.setColor(QPalette::Window, QRgb(0x018bba));
             pal.setColor(QPalette::WindowText, QRgb(0x404044));
-        } else if (m_charTheme == QChart::ChartThemeHighContrast) {
+        } else if (m_chartTheme == QChart::ChartThemeHighContrast) {
             pal.setColor(QPalette::Window, QRgb(0xffab03));
             pal.setColor(QPalette::WindowText, QRgb(0x181818));
-        } else if (m_charTheme == QChart::ChartThemeBlueIcy) {
+        } else if (m_chartTheme == QChart::ChartThemeBlueIcy) {
             pal.setColor(QPalette::Window, QRgb(0xcee7f0));
             pal.setColor(QPalette::WindowText, QRgb(0x404044));
         } else {

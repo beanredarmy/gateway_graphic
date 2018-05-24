@@ -23,7 +23,9 @@ public:
     void furtherSetup();
 
 public slots:
+    void showMessToStatusBar(QString message);
     void removeTab(int tabOrder);
+    void showOverviewData(QString deviceName);
     void createTab();
     void changeTabTitle(QString titleName);
 private:

@@ -59,7 +59,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="iconSize">
        <size>
@@ -134,7 +134,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QComboBox" name="comboBox">
+                  <widget class="QComboBox" name="cmbBox_ov_device">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -192,7 +192,7 @@
                      <property name="font">
                       <font>
                        <family>Calibri</family>
-                       <pointsize>17</pointsize>
+                       <pointsize>20</pointsize>
                        <weight>75</weight>
                        <bold>true</bold>
                       </font>
@@ -203,7 +203,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLCDNumber" name="lcdNumber">
+                    <widget class="QLCDNumber" name="lcdN_ov_curHumiSoil">
                      <property name="font">
                       <font>
                        <weight>50</weight>
@@ -230,7 +230,7 @@
                      <property name="font">
                       <font>
                        <family>Calibri</family>
-                       <pointsize>17</pointsize>
+                       <pointsize>15</pointsize>
                       </font>
                      </property>
                      <property name="text">
@@ -239,7 +239,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLCDNumber" name="lcdNumber_13"/>
+                    <widget class="QLCDNumber" name="lcdN_ov_curHumiEnvi"/>
                    </item>
                   </layout>
                  </item>
@@ -250,7 +250,7 @@
                      <property name="font">
                       <font>
                        <family>Calibri</family>
-                       <pointsize>17</pointsize>
+                       <pointsize>15</pointsize>
                       </font>
                      </property>
                      <property name="text">
@@ -259,7 +259,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLCDNumber" name="lcdNumber_2"/>
+                    <widget class="QLCDNumber" name="lcdN_ov_curTempSoil"/>
                    </item>
                   </layout>
                  </item>
@@ -270,7 +270,7 @@
                      <property name="font">
                       <font>
                        <family>Calibri</family>
-                       <pointsize>17</pointsize>
+                       <pointsize>15</pointsize>
                       </font>
                      </property>
                      <property name="text">
@@ -279,7 +279,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLCDNumber" name="lcdNumber_3"/>
+                    <widget class="QLCDNumber" name="lcdN_ov_curTempEnvi"/>
                    </item>
                   </layout>
                  </item>
@@ -317,7 +317,7 @@
                      <property name="font">
                       <font>
                        <family>Calibri</family>
-                       <pointsize>17</pointsize>
+                       <pointsize>20</pointsize>
                        <weight>75</weight>
                        <bold>true</bold>
                       </font>
@@ -328,7 +328,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLCDNumber" name="lcdNumber_4">
+                    <widget class="QLCDNumber" name="lcdN_ov_aveHumiSoil">
                      <property name="font">
                       <font>
                        <weight>50</weight>
@@ -355,7 +355,7 @@
                      <property name="font">
                       <font>
                        <family>Calibri</family>
-                       <pointsize>17</pointsize>
+                       <pointsize>15</pointsize>
                       </font>
                      </property>
                      <property name="text">
@@ -364,7 +364,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLCDNumber" name="lcdNumber_14"/>
+                    <widget class="QLCDNumber" name="lcdN_ov_aveHumiEnvi"/>
                    </item>
                   </layout>
                  </item>
@@ -375,7 +375,7 @@
                      <property name="font">
                       <font>
                        <family>Calibri</family>
-                       <pointsize>17</pointsize>
+                       <pointsize>15</pointsize>
                       </font>
                      </property>
                      <property name="text">
@@ -384,7 +384,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLCDNumber" name="lcdNumber_5"/>
+                    <widget class="QLCDNumber" name="lcdN_ov_aveTempSoil"/>
                    </item>
                   </layout>
                  </item>
@@ -395,7 +395,7 @@
                      <property name="font">
                       <font>
                        <family>Calibri</family>
-                       <pointsize>17</pointsize>
+                       <pointsize>15</pointsize>
                       </font>
                      </property>
                      <property name="text">
@@ -404,7 +404,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLCDNumber" name="lcdNumber_6"/>
+                    <widget class="QLCDNumber" name="lcdN_ov_aveTempEnvi"/>
                    </item>
                   </layout>
                  </item>
@@ -444,7 +444,7 @@
                    <property name="font">
                     <font>
                      <family>Calibri</family>
-                     <pointsize>17</pointsize>
+                     <pointsize>20</pointsize>
                      <weight>75</weight>
                      <bold>true</bold>
                     </font>
@@ -455,7 +455,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLCDNumber" name="lcdNumber_7"/>
+                  <widget class="QLCDNumber" name="lcdN_ov_minHumiSoil"/>
                  </item>
                  <item>
                   <widget class="Line" name="line_6">
@@ -465,7 +465,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLCDNumber" name="lcdNumber_10">
+                  <widget class="QLCDNumber" name="lcdN_ov_maxHumiSoil">
                    <property name="font">
                     <font>
                      <weight>50</weight>
@@ -492,7 +492,7 @@
                    <property name="font">
                     <font>
                      <family>Calibri</family>
-                     <pointsize>17</pointsize>
+                     <pointsize>15</pointsize>
                     </font>
                    </property>
                    <property name="text">
@@ -501,7 +501,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLCDNumber" name="lcdNumber_16"/>
+                  <widget class="QLCDNumber" name="lcdN_ov_minHumiEnvi"/>
                  </item>
                  <item>
                   <widget class="Line" name="line_3">
@@ -511,7 +511,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLCDNumber" name="lcdNumber_15"/>
+                  <widget class="QLCDNumber" name="lcdN_ov_maxHumiEnvi"/>
                  </item>
                 </layout>
                </item>
@@ -522,7 +522,7 @@
                    <property name="font">
                     <font>
                      <family>Calibri</family>
-                     <pointsize>17</pointsize>
+                     <pointsize>15</pointsize>
                     </font>
                    </property>
                    <property name="text">
@@ -531,7 +531,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLCDNumber" name="lcdNumber_8"/>
+                  <widget class="QLCDNumber" name="lcdN_ov_minTempSoil"/>
                  </item>
                  <item>
                   <widget class="Line" name="line_7">
@@ -541,7 +541,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLCDNumber" name="lcdNumber_11"/>
+                  <widget class="QLCDNumber" name="lcdN_ov_maxTempSoil"/>
                  </item>
                 </layout>
                </item>
@@ -552,7 +552,7 @@
                    <property name="font">
                     <font>
                      <family>Calibri</family>
-                     <pointsize>17</pointsize>
+                     <pointsize>15</pointsize>
                     </font>
                    </property>
                    <property name="text">
@@ -561,7 +561,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLCDNumber" name="lcdNumber_9"/>
+                  <widget class="QLCDNumber" name="lcdN_ov_minTempEnvi"/>
                  </item>
                  <item>
                   <widget class="Line" name="line_8">
@@ -571,7 +571,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLCDNumber" name="lcdNumber_12"/>
+                  <widget class="QLCDNumber" name="lcdN_ov_maxTempEnvi"/>
                  </item>
                 </layout>
                </item>
