@@ -8,8 +8,8 @@ SpecificData::SpecificData(int dataType, QString deviceName, int timeMode, QDate
     m_month(date.month()),
     m_year(date.year())
 {
-    int startOfData = 0; //to determind where the needed data is stored in line
-    switch (m_dataType) {
+   int startOfData = 0; //to determind where the needed data is stored in line
+    switch (dataType) {
     case 0:
         m_dataTypeName = "Đ.ẩm đất";
         startOfData = 10;
@@ -17,61 +17,150 @@ SpecificData::SpecificData(int dataType, QString deviceName, int timeMode, QDate
     case 1:
         m_dataTypeName = "Đ.ẩm mt";
         startOfData = 15;
-        break;
+       break;
     case 2:
         m_dataTypeName = "N.độ đất";
         startOfData = 20;
         break;
     case 3:
-         m_dataTypeName = "N.độ mt";
+        m_dataTypeName = "N.độ mt";
         startOfData = 25;
         break;
     default:
         break;
     }
-    QString path = "/home/bean/gatewaydata/"+ m_deviceName + "/" +  QString::number(m_year)+ "/" + QString::number(m_month) +  "/" + QString::number(m_day);
-    QFile mFile(path);
-    if(mFile.exists()) //If file exist
+
+    switch (timeMode) {
+    case 0:
     {
-        qDebug() << "available";
-
-        if(mFile.open(QIODevice::ReadOnly | QIODevice::Text))
+        m_dataTimeVector.clear();
+        QString path = "/home/bean/gatewaydata/"+ m_deviceName + "/" +  QString::number(m_year)+ "/" + QString::number(m_month) +  "/" + QString::number(m_day);
+        QFile mFile(path);
+        if(mFile.exists()) //If file exist
         {
-            QTextStream in(&mFile);
-            QString line;
-
-            while(!in.atEnd()) //Read all line in file
+            if(mFile.open(QIODevice::ReadOnly | QIODevice::Text))
             {
-                line = in.readLine();
-                switch (m_timeMode) {
-                case 0:
-                    if(line.at(0).isDigit()) //if line started by a digit (is time, not Max, Min or Average)
-                    {
-                        //add time and data to vector
-                        float time = line.mid(0,2).toInt() + (float)line.mid(3,2).toInt()/60;
-                        float data = line.mid(startOfData,4).toFloat();
-                        m_dataTimeVector.push_back(Data_Time(data,time));
-                    }
-                    break;
-                case 1:
+                QTextStream in(&mFile);
+                QString line;
+
+                while(!in.atEnd()) //Read all line in file
+                {
+                    line = in.readLine();
+
+                        if(line.at(0).isDigit()) //if line started by a digit (is time, not Max, Min or Average)
+                        {
+                            //add time and data to vector
+                            float time = line.mid(0,2).toInt() + (float)line.mid(3,2).toInt()/60;
+                            float data = line.mid(startOfData,4).toFloat();
+                            m_dataTimeVector.push_back(Data_Time(data,time));
+                        }
+
+
+                }
+                mFile.close();
+            }
+        }
+    }
+        break;
+    case 1:
+    {
+        m_dataTimeVector.clear();
+        QString path= "/home/bean/gatewaydata/"+ m_deviceName + "/" +  QString::number(m_year)+ "/" + QString::number(m_month) +  "/" + QString::number(m_day);
+        QFile mFile(path);
+        if(mFile.exists()) //If file exist
+        {
+            if(mFile.open(QIODevice::ReadOnly | QIODevice::Text))
+            {
+                QTextStream in(&mFile);
+                QString line;
+
+                while(!in.atEnd()) //Read all line in file
+                {
+                    line = in.readLine();
+
                     if(line.at(0) == "T" ) //if line started by a digit (is time, not Max, Min or Average)
                     {
                         //add time and data to vector
                         float time = line.mid(2,2).toInt();// + (float)line.mid(3,2).toInt()/60;
                         float data = line.mid(startOfData,4).toFloat();
                         m_dataTimeVector.push_back(Data_Time(data,time));
-                    }
-                    break;
-                default:
-                    break;
+
                 }
-
+                mFile.close();
+               }
             }
-            mFile.close();
         }
-    }else qDebug() << "not avaiable";
+    }
+        break;
+    case 2:
+    {
+        m_dataTimeVector.clear();
+        for(int i = 0; i < 7; i++)
+        {
+            QString path = "/home/bean/gatewaydata/"+ m_deviceName + "/" +  QString::number(date.addDays(i).year())+ "/" + QString::number(date.addDays(i).month()) +  "/" + QString::number(date.addDays(i).day());
+            QFile mFile(path);
+            if(mFile.exists()) //If file exist
+            {
+                qDebug() << "available";
 
+                if(mFile.open(QIODevice::ReadOnly | QIODevice::Text))
+                {
+                    QTextStream in(&mFile);
+                    QString line;
+
+                    while(!in.atEnd()) //Read all line in file
+                    {
+                        line = in.readLine();
+                        if(line.at(0) == "A") //If it is "a"verage
+                        {
+                            float data = line.mid(startOfData,4).toFloat();
+                            m_dataTimeVector.push_back(Data_Time(data,i));
+                        }
+
+                    }
+                    mFile.close();
+                }
+            }else qDebug() << "not avaiable";
+        }
+    }
+        break;
+    case 3:
+    {
+        m_dataTimeVector.clear();
+        for(int i = 0; i < 31; i++)
+        {
+            QString path = "/home/bean/gatewaydata/"+ m_deviceName + "/" +  QString::number(m_year)+ "/" + QString::number(m_month) +  "/" + QString::number(i+1);
+            QFile mFile(path);
+            if(mFile.exists()) //If file exist
+            {
+                qDebug() << "available";
+
+                if(mFile.open(QIODevice::ReadOnly | QIODevice::Text))
+                {
+                    QTextStream in(&mFile);
+                    QString line;
+
+                    while(!in.atEnd()) //Read all line in file
+                    {
+                        line = in.readLine();
+                        if(line.at(0) == "A") //If it is "a"verage
+                        {
+                            float data = line.mid(startOfData,4).toFloat();
+                            m_dataTimeVector.push_back(Data_Time(data,i));
+                        }
+
+                    }
+                    mFile.close();
+                }
+            }else qDebug() << "not avaiable";
+        }
+    }
+        break;
+    default:
+        break;
+    }
 }
+
 
 SpecificData::SpecificData(QString deviceName, QDate date):
     m_deviceName(deviceName),
@@ -197,8 +286,10 @@ std::vector<Data_Time> SpecificData::getDataTimeVector(int dataType, int timeMod
 
 Data_Time SpecificData::getLastValue(int dataType)
 {
+    qDebug() << "1";
     //return the last value added to DataTimeVecotor
     return getDataTimeVector(dataType, 0).back();
+    qDebug() << "2";
 }
 
 float SpecificData::getAverageValue(int dataType)

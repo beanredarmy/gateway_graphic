@@ -101,7 +101,7 @@ QChart *DetailWidget::createLineChart(std::vector<SpecificData *> specDataVector
         static_cast<QValueAxis *>(chart->axisX())->setTickCount(13);
         break;
     case 2: //if mode is 7 days
-        chart->axisX()->setRange(-3, 3);
+        chart->axisX()->setRange(0, 6);
         static_cast<QValueAxis *>(chart->axisX())->setTickCount(7);
         break;
     case 3://if mode is month
