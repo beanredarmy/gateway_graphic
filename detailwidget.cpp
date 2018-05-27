@@ -9,6 +9,7 @@ DetailWidget::DetailWidget(QWidget *parent) : QWidget(parent)
     connect(pushButton_OK, SIGNAL (clicked()),this, SLOT (drawChart()));
     connect(pushButton_showData, SIGNAL (clicked()),this, SLOT (viewFileData()));
     connect(pushButton_viewNow, SIGNAL (clicked()),this, SLOT (showPresentData()));
+    connect(cmbBox_device, SIGNAL (currentIndexChanged(QString)),this, SLOT (changeDataDisplay(QString)));
 }
 
 DetailWidget::~DetailWidget()
@@ -77,7 +78,7 @@ QChart *DetailWidget::createLineChart(std::vector<SpecificData *> specDataVector
         //hide legend of scatter serie
         chart->legend()->markers(series2)[0]->setVisible(false);
         //If specData is humidity then connect to slot tooltip of humidity
-        if(specDataVector[i]->dataType() == 1 || specDataVector[i]->dataType() == 2) // Neu series cua do am thi ket noi toi tooltip
+        if(specDataVector[i]->dataType() == 0 || specDataVector[i]->dataType() == 1) // Neu series cua do am thi ket noi toi tooltip
         {
             connect(series, &QSplineSeries::hovered, this, &DetailWidget::tooltip);
             connect(series2, &QSplineSeries::hovered, this, &DetailWidget::tooltip);
@@ -366,7 +367,33 @@ void DetailWidget::changeTheme(int index)
         frame_content->setPalette(pal);
         frame_option->setPalette(pal);
         window()->setPalette(pal);
-    }
+}
+
+void DetailWidget::changeDataDisplay(QString deviceName)
+{
+    int dataType;
+    if(checkBox_humi_soil->isChecked()) dataType = 0;
+    else if(checkBox_humi_envi->isChecked()) dataType = 1;
+    else if(checkBox_temp_soil->isChecked()) dataType = 2;
+    else if(checkBox_temp_envi->isChecked()) dataType = 3;
+    SpecificData *todayData = new SpecificData(deviceName,QDate::currentDate());
+
+    Data_Time temporaryData_Table = todayData->getLastValue(dataType);
+    lcdNumber_curValue->display(temporaryData_Table.first);
+    lcdNumber_curValue->setToolTip(QString("T.Gian: %1h%2p").arg(round(temporaryData_Table.second)).arg((int)((temporaryData_Table.second-(int)temporaryData_Table.second)*60)));
+
+    lcdNumber_aveValue->display(todayData->getAverageValue(dataType));
+
+    temporaryData_Table = todayData->getMinValue(dataType);
+    lcdNumber_minValue->display(temporaryData_Table.first);
+    lcdNumber_minValue->setToolTip(QString("T.Gian: %1h%2p").arg(round(temporaryData_Table.second)).arg((int)((temporaryData_Table.second-(int)temporaryData_Table.second)*60)));
+
+    temporaryData_Table = todayData->getMaxValue(dataType);
+    lcdNumber_maxValue->display(temporaryData_Table.first);
+    lcdNumber_maxValue->setToolTip(QString("T.Gian: %1h%2p").arg(round(temporaryData_Table.second)).arg((int)((temporaryData_Table.second-(int)temporaryData_Table.second)*60)));
+
+    delete todayData;
+}
 
 //initiate and setup widgets
 void DetailWidget::setupWidgets()

@@ -53,6 +53,7 @@ public slots:
     void tooltip(QPointF point, bool state);
     void tooltip_temp(QPointF point, bool state);
     void changeTheme(int index);
+    void changeDataDisplay(QString deviceName);
 private:
     QChartView *m_chartView;
     Callout *m_tooltip;

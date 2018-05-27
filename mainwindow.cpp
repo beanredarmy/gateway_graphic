@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connectFileToClass();
     createAddTabButton();
     furtherSetup();
+    ui->tabWidget->removeTab(1);
 }
 
 MainWindow::~MainWindow()
@@ -65,26 +66,61 @@ void MainWindow::showOverviewData(QString deviceName)
         //create specific data of today
         SpecificData *todayData = new SpecificData(deviceName,QDate::currentDate());
 
-        ui->lcdN_ov_curHumiSoil->display(todayData->getLastValue(0).first);
-        ui->lcdN_ov_curHumiSoil->setToolTip("se them sau");
-        ui->lcdN_ov_curHumiEnvi->display(todayData->getLastValue(1).first);
-        ui->lcdN_ov_curTempSoil->display(todayData->getLastValue(2).first);
-        ui->lcdN_ov_curTempEnvi->display(todayData->getLastValue(3).first);
+        Data_Time temporaryData_Table = todayData->getLastValue(0);
+        ui->lcdN_ov_curHumiSoil->display(temporaryData_Table.first);
+        ui->lcdN_ov_curHumiSoil->setToolTip(QString("T.Gian: %1h%2p").arg(round(temporaryData_Table.second)).arg((int)((temporaryData_Table.second-(int)temporaryData_Table.second)*60)));
+
+        temporaryData_Table = todayData->getLastValue(1);
+        ui->lcdN_ov_curHumiEnvi->display(temporaryData_Table.first);
+        ui->lcdN_ov_curHumiEnvi->setToolTip(QString("T.Gian: %1h%2p").arg(round(temporaryData_Table.second)).arg((int)((temporaryData_Table.second-(int)temporaryData_Table.second)*60)));
+
+        temporaryData_Table = todayData->getLastValue(2);
+        ui->lcdN_ov_curTempSoil->display(temporaryData_Table.first);
+        ui->lcdN_ov_curTempSoil->setToolTip(QString("T.Gian: %1h%2p").arg(round(temporaryData_Table.second)).arg((int)((temporaryData_Table.second-(int)temporaryData_Table.second)*60)));
+
+        temporaryData_Table = todayData->getLastValue(3);
+        ui->lcdN_ov_curTempEnvi->display(temporaryData_Table.first);
+        ui->lcdN_ov_curTempEnvi->setToolTip(QString("T.Gian: %1h%2p").arg(round(temporaryData_Table.second)).arg((int)((temporaryData_Table.second-(int)temporaryData_Table.second)*60)));
+
 
         ui->lcdN_ov_aveHumiSoil->display(todayData->getAverageValue(0));
         ui->lcdN_ov_aveHumiEnvi->display(todayData->getAverageValue(1));
         ui->lcdN_ov_aveTempSoil->display(todayData->getAverageValue(2));
         ui->lcdN_ov_aveTempEnvi->display(todayData->getAverageValue(3));
 
-        ui->lcdN_ov_minHumiSoil->display(todayData->getMinValue(0).first);
-        ui->lcdN_ov_minHumiEnvi->display(todayData->getMinValue(1).first);
-        ui->lcdN_ov_minTempSoil->display(todayData->getMinValue(2).first);
-        ui->lcdN_ov_minTempEnvi->display(todayData->getMinValue(3).first);
+        temporaryData_Table = todayData->getMinValue(0);
+        ui->lcdN_ov_minHumiSoil->display(temporaryData_Table.first);
+        ui->lcdN_ov_minHumiSoil->setToolTip(QString("T.Gian: %1h%2p").arg(round(temporaryData_Table.second)).arg((int)((temporaryData_Table.second-(int)temporaryData_Table.second)*60)));
 
-        ui->lcdN_ov_maxHumiSoil->display(todayData->getMaxValue(0).first);
-        ui->lcdN_ov_maxHumiEnvi->display(todayData->getMaxValue(1).first);
-        ui->lcdN_ov_maxTempSoil->display(todayData->getMaxValue(2).first);
-        ui->lcdN_ov_maxTempEnvi->display(todayData->getMaxValue(3).first);
+        temporaryData_Table = todayData->getMinValue(1);
+        ui->lcdN_ov_minHumiEnvi->display(temporaryData_Table.first);
+        ui->lcdN_ov_minHumiEnvi->setToolTip(QString("T.Gian: %1h%2p").arg(round(temporaryData_Table.second)).arg((int)((temporaryData_Table.second-(int)temporaryData_Table.second)*60)));
+
+        temporaryData_Table = todayData->getMinValue(2);
+        ui->lcdN_ov_minTempSoil->display(temporaryData_Table.first);
+        ui->lcdN_ov_minTempSoil->setToolTip(QString("T.Gian: %1h%2p").arg(round(temporaryData_Table.second)).arg((int)((temporaryData_Table.second-(int)temporaryData_Table.second)*60)));
+
+        temporaryData_Table = todayData->getMinValue(3);
+        ui->lcdN_ov_minTempEnvi->display(temporaryData_Table.first);
+        ui->lcdN_ov_minTempEnvi->setToolTip(QString("T.Gian: %1h%2p").arg(round(temporaryData_Table.second)).arg((int)((temporaryData_Table.second-(int)temporaryData_Table.second)*60)));
+
+        temporaryData_Table = todayData->getMaxValue(0);
+        ui->lcdN_ov_maxHumiSoil->display(temporaryData_Table.first);
+        ui->lcdN_ov_maxHumiSoil->setToolTip(QString("T.Gian: %1h%2p").arg(round(temporaryData_Table.second)).arg((int)((temporaryData_Table.second-(int)temporaryData_Table.second)*60)));
+
+        temporaryData_Table = todayData->getMaxValue(1);
+        ui->lcdN_ov_maxHumiEnvi->display(temporaryData_Table.first);
+        ui->lcdN_ov_maxHumiEnvi->setToolTip(QString("T.Gian: %1h%2p").arg(round(temporaryData_Table.second)).arg((int)((temporaryData_Table.second-(int)temporaryData_Table.second)*60)));
+
+        temporaryData_Table = todayData->getMaxValue(2);
+        ui->lcdN_ov_maxTempSoil->display(temporaryData_Table.first);
+        ui->lcdN_ov_maxTempSoil->setToolTip(QString("T.Gian: %1h%2p").arg(round(temporaryData_Table.second)).arg((int)((temporaryData_Table.second-(int)temporaryData_Table.second)*60)));
+
+        temporaryData_Table = todayData->getMaxValue(3);
+        ui->lcdN_ov_maxTempEnvi->display(temporaryData_Table.first);
+        ui->lcdN_ov_maxTempEnvi->setToolTip(QString("T.Gian: %1h%2p").arg(round(temporaryData_Table.second)).arg((int)((temporaryData_Table.second-(int)temporaryData_Table.second)*60)));
+
+
         //release pointer
         delete todayData;
     } else showMessToStatusBar(QString("Hãy chọn thiết bị"));

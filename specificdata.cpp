@@ -286,48 +286,65 @@ std::vector<Data_Time> SpecificData::getDataTimeVector(int dataType, int timeMod
 
 Data_Time SpecificData::getLastValue(int dataType)
 {
-    qDebug() << "1";
+
     //return the last value added to DataTimeVecotor
-    return getDataTimeVector(dataType, 0).back();
-    qDebug() << "2";
+    std::vector<Data_Time> dataTimeVector = getDataTimeVector(dataType, 0);
+    if(!dataTimeVector.empty())
+    {
+        return getDataTimeVector(dataType, 0).back();
+    } else return Data_Time(0,0);
+
+
 }
 
 float SpecificData::getAverageValue(int dataType)
 {
     float sumValue = 0;
     std::vector<Data_Time> dataTimeVector = getDataTimeVector(dataType, 0);
-    // calculate sum of all data in vector
-    for(uint i = 0; i < dataTimeVector.size(); i++)
+    if(!dataTimeVector.empty())
     {
-        sumValue += dataTimeVector.at(i).first;
-    }
-    // and return avegare
-    return sumValue/dataTimeVector.size();
+        // calculate sum of all data in vector
+        for(uint i = 0; i < dataTimeVector.size(); i++)
+        {
+            sumValue += dataTimeVector.at(i).first;
+        }
+        // and return avegare
+        return sumValue/dataTimeVector.size();
+    } else return 0;
+
 }
 
 Data_Time SpecificData::getMinValue(int dataType)
 {
 
      std::vector<Data_Time> dataTimeVector = getDataTimeVector(dataType, 0);
-     //set min value is equal to the first value
-     Data_Time minDataTime = dataTimeVector.at(0) ;
-     //compare min value with all value in vector
-     for(uint i = 0; i < dataTimeVector.size(); i++)
+     if(!dataTimeVector.empty())
      {
-         if(minDataTime.first > dataTimeVector.at(i).first)  minDataTime = dataTimeVector.at(i);
-     }
-     return minDataTime;
+        //set min value is equal to the first value
+        Data_Time minDataTime = dataTimeVector.at(0) ;
+        //compare min value with all value in vector
+        for(uint i = 0; i < dataTimeVector.size(); i++)
+        {
+            if(minDataTime.first > dataTimeVector.at(i).first)  minDataTime = dataTimeVector.at(i);
+        }
+        return minDataTime;
+     } else return Data_Time(0,0);
+
 }
 
 Data_Time SpecificData::getMaxValue(int dataType)
 {
     std::vector<Data_Time> dataTimeVector = getDataTimeVector(dataType, 0);
-    //set max value is equal to the first value
-    Data_Time maxDataTime = dataTimeVector.at(0) ;
-     //compare max value with all value in vector
-    for(uint i = 0; i < dataTimeVector.size(); i++)
+    if(!dataTimeVector.empty())
     {
-        if(maxDataTime.first < dataTimeVector.at(i).first)  maxDataTime = dataTimeVector.at(i);
-    }
-    return maxDataTime;
+        //set max value is equal to the first value
+            Data_Time maxDataTime = dataTimeVector.at(0) ;
+             //compare max value with all value in vector
+            for(uint i = 0; i < dataTimeVector.size(); i++)
+            {
+                if(maxDataTime.first < dataTimeVector.at(i).first)  maxDataTime = dataTimeVector.at(i);
+            }
+            return maxDataTime;
+    } else return Data_Time(0,0);
+
 }
