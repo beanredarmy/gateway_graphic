@@ -239,7 +239,14 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLCDNumber" name="lcdN_ov_curHumiEnvi"/>
+                    <widget class="QLCDNumber" name="lcdN_ov_curHumiEnvi">
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>30</height>
+                      </size>
+                     </property>
+                    </widget>
                    </item>
                   </layout>
                  </item>
@@ -259,7 +266,14 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLCDNumber" name="lcdN_ov_curTempSoil"/>
+                    <widget class="QLCDNumber" name="lcdN_ov_curTempSoil">
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>30</height>
+                      </size>
+                     </property>
+                    </widget>
                    </item>
                   </layout>
                  </item>
@@ -279,7 +293,14 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLCDNumber" name="lcdN_ov_curTempEnvi"/>
+                    <widget class="QLCDNumber" name="lcdN_ov_curTempEnvi">
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>30</height>
+                      </size>
+                     </property>
+                    </widget>
                    </item>
                   </layout>
                  </item>
@@ -364,7 +385,14 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLCDNumber" name="lcdN_ov_aveHumiEnvi"/>
+                    <widget class="QLCDNumber" name="lcdN_ov_aveHumiEnvi">
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>30</height>
+                      </size>
+                     </property>
+                    </widget>
                    </item>
                   </layout>
                  </item>
@@ -384,7 +412,14 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLCDNumber" name="lcdN_ov_aveTempSoil"/>
+                    <widget class="QLCDNumber" name="lcdN_ov_aveTempSoil">
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>30</height>
+                      </size>
+                     </property>
+                    </widget>
                    </item>
                   </layout>
                  </item>
@@ -404,7 +439,14 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLCDNumber" name="lcdN_ov_aveTempEnvi"/>
+                    <widget class="QLCDNumber" name="lcdN_ov_aveTempEnvi">
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>30</height>
+                      </size>
+                     </property>
+                    </widget>
                    </item>
                   </layout>
                  </item>
@@ -501,7 +543,14 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLCDNumber" name="lcdN_ov_minHumiEnvi"/>
+                  <widget class="QLCDNumber" name="lcdN_ov_minHumiEnvi">
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                  </widget>
                  </item>
                  <item>
                   <widget class="Line" name="line_3">
@@ -511,7 +560,14 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLCDNumber" name="lcdN_ov_maxHumiEnvi"/>
+                  <widget class="QLCDNumber" name="lcdN_ov_maxHumiEnvi">
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </item>
@@ -531,7 +587,14 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLCDNumber" name="lcdN_ov_minTempSoil"/>
+                  <widget class="QLCDNumber" name="lcdN_ov_minTempSoil">
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                  </widget>
                  </item>
                  <item>
                   <widget class="Line" name="line_7">
@@ -541,7 +604,14 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLCDNumber" name="lcdN_ov_maxTempSoil"/>
+                  <widget class="QLCDNumber" name="lcdN_ov_maxTempSoil">
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </item>
@@ -561,7 +631,14 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLCDNumber" name="lcdN_ov_minTempEnvi"/>
+                  <widget class="QLCDNumber" name="lcdN_ov_minTempEnvi">
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                  </widget>
                  </item>
                  <item>
                   <widget class="Line" name="line_8">
@@ -571,7 +648,14 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLCDNumber" name="lcdN_ov_maxTempEnvi"/>
+                  <widget class="QLCDNumber" name="lcdN_ov_maxTempEnvi">
+                   <property name="maximumSize">
+                    <size>
+                     <width>16777215</width>
+                     <height>30</height>
+                    </size>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </item>
