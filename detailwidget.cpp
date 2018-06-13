@@ -97,25 +97,28 @@ QChart *DetailWidget::createLineChart(std::vector<SpecificData *> specDataVector
     case 0://if mode is day
         chart->axisX()->setRange(0, 24);
         static_cast<QValueAxis *>(chart->axisX())->setTickCount(13);
+        chart->axisX()->setTitleText("Thời gian (h)");
         break;
     case 1://if mode is day
         chart->axisX()->setRange(0, 24);
         static_cast<QValueAxis *>(chart->axisX())->setTickCount(13);
+        chart->axisX()->setTitleText("Thời gian (h)");
         break;
     case 2: //if mode is 7 days
         chart->axisX()->setRange(0, 6);
         static_cast<QValueAxis *>(chart->axisX())->setTickCount(7);
+        chart->axisX()->setTitleText("Thời gian (ngày)");
         break;
     case 3://if mode is month
         chart->axisX()->setRange(1, 31);
         static_cast<QValueAxis *>(chart->axisX())->setTickCount(11);
+        chart->axisX()->setTitleText("Thời gian (ngày)");
         break;
     default:
         break;
     }
     //axisY is a humidity axis (from 0 to 100 %)
     chart->axisY()->setRange(0, 100);
-    chart->axisX()->setTitleText("Thời gian (h)");
     chart->axisY()->setTitleText("Độ ẩm (%)");
     //create temperature axis (from 0 to 60 degree)
     QValueAxis *axisTemp = new QValueAxis();
@@ -174,25 +177,28 @@ QChart *DetailWidget::createSplineChart(std::vector<SpecificData *> specDataVect
     case 0://if mode is day
         chart->axisX()->setRange(0, 24);
         static_cast<QValueAxis *>(chart->axisX())->setTickCount(13);
+        chart->axisX()->setTitleText("Thời gian (h)");
         break;
     case 1://if mode is day
         chart->axisX()->setRange(0, 24);
         static_cast<QValueAxis *>(chart->axisX())->setTickCount(13);
+        chart->axisX()->setTitleText("Thời gian (h)");
         break;
     case 2: //if mode is 7 days
         chart->axisX()->setRange(0, 6);
         static_cast<QValueAxis *>(chart->axisX())->setTickCount(7);
+        chart->axisX()->setTitleText("Thời gian (ngày)");
         break;
     case 3://if mode is month
         chart->axisX()->setRange(1, 31);
         static_cast<QValueAxis *>(chart->axisX())->setTickCount(11);
+        chart->axisX()->setTitleText("Thời gian (ngày)");
         break;
     default:
         break;
     }
     //axisY is a humidity axis (from 0 to 100 %)
     chart->axisY()->setRange(0, 100);
-    chart->axisX()->setTitleText("Thời gian (h)");
     chart->axisY()->setTitleText("Độ ẩm (%)");
     //create temperature axis (from 0 to 60 degree)
     QValueAxis *axisTemp = new QValueAxis();
@@ -250,25 +256,28 @@ QChart *DetailWidget::createScatterChart(std::vector<SpecificData *> specDataVec
     case 0://if mode is day
         chart->axisX()->setRange(0, 24);
         static_cast<QValueAxis *>(chart->axisX())->setTickCount(13);
+        chart->axisX()->setTitleText("Thời gian (h)");
         break;
     case 1://if mode is day
         chart->axisX()->setRange(0, 24);
         static_cast<QValueAxis *>(chart->axisX())->setTickCount(13);
+        chart->axisX()->setTitleText("Thời gian (h)");
         break;
     case 2: //if mode is 7 days
         chart->axisX()->setRange(0, 6);
         static_cast<QValueAxis *>(chart->axisX())->setTickCount(7);
+        chart->axisX()->setTitleText("Thời gian (ngày)");
         break;
     case 3://if mode is month
         chart->axisX()->setRange(1, 31);
         static_cast<QValueAxis *>(chart->axisX())->setTickCount(11);
+        chart->axisX()->setTitleText("Thời gian (ngày)");
         break;
     default:
         break;
     }
     //axisY is a humidity axis (from 0 to 100 %)
     chart->axisY()->setRange(0, 100);
-    chart->axisX()->setTitleText("Thời gian (h)");
     chart->axisY()->setTitleText("Độ ẩm (%)");
     //create temperature axis (from 0 to 60 degree)
     QValueAxis *axisTemp = new QValueAxis();
