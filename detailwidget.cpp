@@ -9,6 +9,8 @@ DetailWidget::DetailWidget(QWidget *parent) : QWidget(parent)
     connect(pushButton_OK, SIGNAL (clicked()),this, SLOT (drawChart()));
     connect(pushButton_showData, SIGNAL (clicked()),this, SLOT (viewFileData()));
     connect(pushButton_viewNow, SIGNAL (clicked()),this, SLOT (showPresentData()));
+    connect(pushBtn_compare, SIGNAL (clicked()),this, SLOT (compareData()));
+    connect(pushBtn_notCompare, SIGNAL (clicked()),this, SLOT (hideComparison()));
     connect(cmbBox_device, SIGNAL (currentIndexChanged(QString)),this, SLOT (changeDataDisplay(QString)));
 }
 
@@ -46,7 +48,6 @@ void DetailWidget::setupFontChart(QChart *chart) const
     {
         chart->axes()[i]->setTitleFont(QFont("Calibri", 11, QFont::Bold));
         chart->axes()[i]->setLabelsFont(QFont("Calibri", 11));
-
     }
     //and change font of legend
     chart->legend()->setFont(QFont("Calibri", 10));
@@ -132,7 +133,75 @@ QChart *DetailWidget::createLineChart(std::vector<SpecificData *> specDataVector
 QChart *DetailWidget::createSplineChart(std::vector<SpecificData *> specDataVector) const
 {
     QChart *chart = new QChart();
+    chart->setContentsMargins(-25,-25,-25,-25);
 
+    //iterate all specificData
+    for (uint i = 0; i < specDataVector.size(); i++)  {
+        //create scatter and line serie
+        QScatterSeries *series2 = new QScatterSeries(chart);
+        series2->setMarkerSize(5.0);
+        QSplineSeries *series = new QSplineSeries(chart);
+        //iterate all (date,time) elements of specificData
+        for (uint j = 0; j<specDataVector[i]->dataTimeVector().size();j++)
+        {
+            //add each elements to series
+            series->append(specDataVector[i]->dataTimeVector()[j].second, specDataVector[i]->dataTimeVector()[j].first);
+            series2->append(specDataVector[i]->dataTimeVector()[j].second, specDataVector[i]->dataTimeVector()[j].first);
+        }
+        //set name for series based on device name and data type
+        series->setName(specDataVector[i]->deviceName() + QString(": ") + specDataVector[i]->dataTypeName());
+        //add series to chart
+        chart->addSeries(series);
+        chart->addSeries(series2);
+        //hide legend of scatter serie
+        chart->legend()->markers(series2)[0]->setVisible(false);
+        //If specData is humidity then connect to slot tooltip of humidity
+        if(specDataVector[i]->dataType() == 0 || specDataVector[i]->dataType() == 1) // Neu series cua do am thi ket noi toi tooltip
+        {
+            connect(series, &QSplineSeries::hovered, this, &DetailWidget::tooltip);
+            connect(series2, &QSplineSeries::hovered, this, &DetailWidget::tooltip);
+        } else // else if specData is temperature then connect to slot tooltip of temperature
+        {
+            connect(series, &QSplineSeries::hovered, this, &DetailWidget::tooltip_temp);
+            connect(series2, &QSplineSeries::hovered, this, &DetailWidget::tooltip_temp);
+        }
+    }
+
+    //create axisX and axisY by default
+    chart->createDefaultAxes();
+    //Set range of axisX based on date mode
+    switch (cmbBox_dateMode->currentIndex()) {
+    case 0://if mode is day
+        chart->axisX()->setRange(0, 24);
+        static_cast<QValueAxis *>(chart->axisX())->setTickCount(13);
+        break;
+    case 1://if mode is day
+        chart->axisX()->setRange(0, 24);
+        static_cast<QValueAxis *>(chart->axisX())->setTickCount(13);
+        break;
+    case 2: //if mode is 7 days
+        chart->axisX()->setRange(0, 6);
+        static_cast<QValueAxis *>(chart->axisX())->setTickCount(7);
+        break;
+    case 3://if mode is month
+        chart->axisX()->setRange(1, 31);
+        static_cast<QValueAxis *>(chart->axisX())->setTickCount(11);
+        break;
+    default:
+        break;
+    }
+    //axisY is a humidity axis (from 0 to 100 %)
+    chart->axisY()->setRange(0, 100);
+    chart->axisX()->setTitleText("Thời gian (h)");
+    chart->axisY()->setTitleText("Độ ẩm (%)");
+    //create temperature axis (from 0 to 60 degree)
+    QValueAxis *axisTemp = new QValueAxis();
+    axisTemp->setRange(0,60);
+    axisTemp->setTitleText("Nhiệt độ (độ C)");
+    chart->addAxis(axisTemp,Qt::AlignRight);
+
+    // Add space to label to add space between labels and axis
+    static_cast<QValueAxis *>(chart->axisY())->setLabelFormat("%.1f  ");
 
     return chart;
 }
@@ -140,6 +209,75 @@ QChart *DetailWidget::createSplineChart(std::vector<SpecificData *> specDataVect
 QChart *DetailWidget::createScatterChart(std::vector<SpecificData *> specDataVector) const
 {
     QChart *chart = new QChart();
+    chart->setContentsMargins(-25,-25,-25,-25);
+
+    //iterate all specificData
+    for (uint i = 0; i < specDataVector.size(); i++)  {
+        //create scatter and line serie
+        QScatterSeries *series2 = new QScatterSeries(chart);
+        series2->setMarkerSize(5.0);
+
+        //iterate all (date,time) elements of specificData
+        for (uint j = 0; j<specDataVector[i]->dataTimeVector().size();j++)
+        {
+            //add each elements to series
+
+            series2->append(specDataVector[i]->dataTimeVector()[j].second, specDataVector[i]->dataTimeVector()[j].first);
+        }
+        //set name for series based on device name and data type
+
+        //add series to chart
+
+        chart->addSeries(series2);
+        //hide legend of scatter serie
+        chart->legend()->markers(series2)[0]->setVisible(false);
+        //If specData is humidity then connect to slot tooltip of humidity
+        if(specDataVector[i]->dataType() == 0 || specDataVector[i]->dataType() == 1) // Neu series cua do am thi ket noi toi tooltip
+        {
+
+            connect(series2, &QSplineSeries::hovered, this, &DetailWidget::tooltip);
+        } else // else if specData is temperature then connect to slot tooltip of temperature
+        {
+
+            connect(series2, &QSplineSeries::hovered, this, &DetailWidget::tooltip_temp);
+        }
+    }
+
+    //create axisX and axisY by default
+    chart->createDefaultAxes();
+    //Set range of axisX based on date mode
+    switch (cmbBox_dateMode->currentIndex()) {
+    case 0://if mode is day
+        chart->axisX()->setRange(0, 24);
+        static_cast<QValueAxis *>(chart->axisX())->setTickCount(13);
+        break;
+    case 1://if mode is day
+        chart->axisX()->setRange(0, 24);
+        static_cast<QValueAxis *>(chart->axisX())->setTickCount(13);
+        break;
+    case 2: //if mode is 7 days
+        chart->axisX()->setRange(0, 6);
+        static_cast<QValueAxis *>(chart->axisX())->setTickCount(7);
+        break;
+    case 3://if mode is month
+        chart->axisX()->setRange(1, 31);
+        static_cast<QValueAxis *>(chart->axisX())->setTickCount(11);
+        break;
+    default:
+        break;
+    }
+    //axisY is a humidity axis (from 0 to 100 %)
+    chart->axisY()->setRange(0, 100);
+    chart->axisX()->setTitleText("Thời gian (h)");
+    chart->axisY()->setTitleText("Độ ẩm (%)");
+    //create temperature axis (from 0 to 60 degree)
+    QValueAxis *axisTemp = new QValueAxis();
+    axisTemp->setRange(0,60);
+    axisTemp->setTitleText("Nhiệt độ (độ C)");
+    chart->addAxis(axisTemp,Qt::AlignRight);
+
+    // Add space to label to add space between labels and axis
+    static_cast<QValueAxis *>(chart->axisY())->setLabelFormat("%.1f  ");
 
     return chart;
 }
@@ -156,6 +294,7 @@ void DetailWidget::drawChart()
 
         std::vector<SpecificData*> specDataVector;
         QCheckBox *checkBoxes[4] = {checkBox_humi_soil, checkBox_humi_envi, checkBox_temp_soil, checkBox_temp_envi };
+        int numberOfCheckBoxes = 0;
         //Create specific data based on checkbox checked
         for(int i = 0; i < 4; i++)
         {
@@ -163,11 +302,31 @@ void DetailWidget::drawChart()
             {
                 SpecificData *specData = new SpecificData(i,deviceName,timeMode,date);
                 specDataVector.push_back(specData);
+                numberOfCheckBoxes ++;
             }
         }
-        //remove previous chart
-        m_chartView->chart()->deleteLater();
-        m_chartView->setChart(createLineChart(specDataVector));
+
+        //Check for the number of checkBox != 0
+        if(numberOfCheckBoxes != 0)
+        {
+            //remove previous chart
+            m_chartView->chart()->deleteLater();
+            switch (cmbBox_graphMode->currentIndex()) {
+            case 0:
+                m_chartView->setChart(createLineChart(specDataVector));
+                break;
+            case 1:
+                m_chartView->setChart(createSplineChart(specDataVector));
+                break;
+            case 2:
+                m_chartView->setChart(createScatterChart(specDataVector));
+                break;
+            default:
+                break;
+            }
+        } else emit sendMessToStatusBar(QString("Hãy chọn ít nhất một thông số!"));
+
+
         //Release memory allocated for specific data
         for (std::vector< SpecificData* >::iterator it = specDataVector.begin() ; it != specDataVector.end(); ++it)
         {
@@ -189,7 +348,7 @@ void DetailWidget::viewFileData()
 {
     QString deviceName = cmbBox_device->currentText();
     QDate date = dateEdit_device1->date();
-    QString docPath = "/home/bean/gatewaydata/"+ deviceName + "/" +  QString::number(date.year())+ "/" + QString::number(date.month()) +  "/" + QString::number(date.day());
+    QString docPath = SpecificData::m_dataPath + "/" + deviceName + "/" +  QString::number(date.year())+ "/" + QString::number(date.month()) +  "/" + QString::number(date.day());
     QFile mFile(docPath);
     if(mFile.exists()) //If file exist
     {
@@ -210,47 +369,68 @@ void DetailWidget::showPresentData()
 
 void DetailWidget::compareData()
 {
-    m_tooltip = 0;
-    //get infor from comboboxes and dateEdit
-    QString deviceName = cmbBox_device->currentText();
-    QString deviceName2 = cmbBox_device2->currentText();
-    QString deviceName3 = cmbBox_device3->currentText();
-    int timeMode = cmbBox_dateMode->currentIndex();
-    QDate date = dateEdit_device1->date();
-    QDate date2 = dateEdit_device2->date();
-    QDate date3 = dateEdit_device3->date();
-
-    std::vector<SpecificData*> specDataVector;
-    QCheckBox *checkBoxes[4] = {checkBox_humi_soil, checkBox_humi_envi, checkBox_temp_soil, checkBox_temp_envi };
-    //Create specific data based on checkbox checked
-    for(int i = 0; i < 4; i++)
+    if(cmbBox_device->currentIndex() != 0) //If currentText != Chon
     {
-        if(checkBoxes[i]->isChecked())
+        m_tooltip = 0;
+        //get infor from comboboxes and dateEdit
+        QString deviceName = cmbBox_device->currentText();
+        QString deviceName2 = cmbBox_device2->currentText();
+        QString deviceName3 = cmbBox_device3->currentText();
+        int timeMode = cmbBox_dateMode->currentIndex();
+        QDate date = dateEdit_device1->date();
+        QDate date2 = dateEdit_device2->date();
+        QDate date3 = dateEdit_device3->date();
+
+        std::vector<SpecificData*> specDataVector;
+        QCheckBox *checkBoxes[4] = {checkBox_humi_soil, checkBox_humi_envi, checkBox_temp_soil, checkBox_temp_envi };
+        //Create specific data based on checkbox checked
+        for(int i = 0; i < 4; i++)
         {
-            SpecificData *specData = new SpecificData(i,deviceName,timeMode,date);
-            SpecificData *specData2 = new SpecificData(i,deviceName2,timeMode,date2);
-            SpecificData *specData3 = new SpecificData(i,deviceName3,timeMode,date3);
-            specDataVector.push_back(specData);
-            specDataVector.push_back(specData2);
-            specDataVector.push_back(specData3);
+            if(checkBoxes[i]->isChecked())
+            {
+                SpecificData *specData = new SpecificData(i,deviceName,timeMode,date);
+                specDataVector.push_back(specData);
+                if(cmbBox_device2->currentIndex() != 0)
+                {
+                    SpecificData *specData2 = new SpecificData(i,deviceName2,timeMode,date2);
+                    specDataVector.push_back(specData2);
+                }
+                if(cmbBox_device3->currentIndex() != 0)
+                {
+                    SpecificData *specData3 = new SpecificData(i,deviceName3,timeMode,date3);
+                    specDataVector.push_back(specData3);
+                }
+            }
         }
-    }
-    //remove previous chart
-    m_chartView->chart()->deleteLater();
-    m_chartView->setChart(createLineChart(specDataVector));
-    //Release memory allocated for specific data
-    for (std::vector< SpecificData* >::iterator it = specDataVector.begin() ; it != specDataVector.end(); ++it)
-    {
-        delete (*it);
-    }
-    //and clear vector
-    specDataVector.clear();
+        //remove previous chart
+        m_chartView->chart()->deleteLater();
+        switch (cmbBox_graphMode->currentIndex()) {
+        case 0:
+            m_chartView->setChart(createLineChart(specDataVector));
+            break;
+        case 1:
+            m_chartView->setChart(createSplineChart(specDataVector));
+            break;
+        case 2:
+            m_chartView->setChart(createScatterChart(specDataVector));
+            break;
+        default:
+            break;
+        }
+        //Release memory allocated for specific data
+        for (std::vector< SpecificData* >::iterator it = specDataVector.begin() ; it != specDataVector.end(); ++it)
+        {
+            delete (*it);
+        }
+        //and clear vector
+        specDataVector.clear();
 
-    //re-setup font chart
-    setupFontChart(m_chartView->chart());
+        //re-setup font chart
+        setupFontChart(m_chartView->chart());
 
-    //call currentIndexChanged function to change theme immediately
-    cmbBox_theme->currentIndexChanged(cmbBox_theme->currentIndex());
+        //call currentIndexChanged function to change theme immediately
+        cmbBox_theme->currentIndexChanged(cmbBox_theme->currentIndex());
+    } else emit sendMessToStatusBar(QString("Hãy chọn thiết bị"));
 }
 
 void DetailWidget::hideComparison()
@@ -266,10 +446,16 @@ void DetailWidget::tooltip(QPointF point, bool state)
         m_tooltip = new Callout(m_chartView->chart());
 
     if (state) {
-        //get minute value from coordinate
-        int minute = (int)((point.x()-(int)point.x())*60);
-        //show value and time to tooltip
-        m_tooltip->setText(QString("T.Gian: %1h%2p \nĐ.Ẩm: %3 (%)").arg(round(point.x())).arg(minute).arg(round(point.y()*100)/100));
+        if(cmbBox_dateMode->currentIndex() == 2 || cmbBox_dateMode->currentIndex() == 3)
+        {
+            m_tooltip->setText(QString("Ngày:%1\nĐ.Ẩm:%2").arg(floor(point.x())).arg(round(point.y()*100)/100));
+        }else
+        {
+            //get minute value from coordinate
+            int minute = (int)((point.x()-(int)point.x())*60);
+            //show value and time to tooltip
+            m_tooltip->setText(QString("T.Gian:%1h%2p\nĐ.Ẩm:%3").arg(round(point.x())).arg(minute).arg(round(point.y()*100)/100));
+        }
         m_tooltip->setAnchor(point);
         m_tooltip->setZValue(11);
         m_tooltip->updateGeometry();
@@ -287,10 +473,16 @@ void DetailWidget::tooltip_temp(QPointF point, bool state)
         m_tooltip = new Callout(m_chartView->chart());
 
     if (state) {
-        //get minute value from coordinate
-        int minute = (int)((point.x()-(int)point.x())*60);
-        //show value and time to tooltip
-        m_tooltip->setText(QString("T.Gian: %1h%2p \nN.Độ: %3 (°C)").arg(round(point.x())).arg(minute).arg(round(point.y()*60)/100));
+        if(cmbBox_dateMode->currentIndex() == 2 || cmbBox_dateMode->currentIndex() == 3)
+        {
+            m_tooltip->setText(QString("Ngày:%1\nN.Độ:%2").arg(floor(point.x())).arg(round(point.y()*60)/100));
+        } else
+        {
+            //get minute value from coordinate
+            int minute = (int)((point.x()-(int)point.x())*60);
+            //show value and time to tooltip
+            m_tooltip->setText(QString("T.Gian:%1h%2p\nN.Độ:%3").arg(round(point.x())).arg(minute).arg(round(point.y()*60)/100));
+        }
         m_tooltip->setAnchor(point);
         m_tooltip->setZValue(11);
         m_tooltip->updateGeometry();

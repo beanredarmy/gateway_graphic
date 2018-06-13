@@ -39,7 +39,6 @@ Callout::Callout(QChart *chart):
     QGraphicsItem(chart),
     m_chart(chart)
 {
-    m_font = QFont("Calibri", 11);
     qDebug() << "Tao callout";
 }
 

@@ -31,7 +31,6 @@ public slots:
 private slots:
     void on_lineEdit_dataPath_editingFinished();
 
-    void on_pushButton_clicked();
 
 private:
     Ui::MainWindow *ui;
