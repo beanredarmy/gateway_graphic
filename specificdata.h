@@ -29,7 +29,7 @@ public:
     float getAverageValue(int dataType);
     Data_Time getMinValue(int dataType);
     Data_Time getMaxValue(int dataType);
-
+    static QString m_dataPath;
 private:
 
     int m_dataType;

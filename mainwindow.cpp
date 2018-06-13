@@ -3,15 +3,19 @@
 #include <QDebug>
 #include <QToolButton>
 
+
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    SpecificData::m_dataPath = ui->lineEdit_dataPath->text();
     connectFileToClass();
     createAddTabButton();
     furtherSetup();
     ui->tabWidget->removeTab(1);
+
 }
 
 MainWindow::~MainWindow()
@@ -22,7 +26,9 @@ MainWindow::~MainWindow()
 //Scan all device and add to deviceList
 void MainWindow::connectFileToClass()
 {
-    QDir mDir("/home/bean/gatewaydata");
+    qDebug() << SpecificData::m_dataPath;
+    QDir mDir(SpecificData::m_dataPath);
+    DetailWidget::m_deviceList.clear();
     DetailWidget::m_deviceList << "Chọn";
     for(int i=0; i<mDir.entryInfoList().count(); ++i )
     {
@@ -172,4 +178,12 @@ void MainWindow::createAddTabButton()
 
 }
 
+void MainWindow::on_lineEdit_dataPath_editingFinished()
+{
 
+        SpecificData::m_dataPath = ui->lineEdit_dataPath->text();
+        connectFileToClass();
+        showOverviewData(ui->cmbBox_ov_device->currentText());
+        ui->cmbBox_ov_device->clear();
+        ui->cmbBox_ov_device->addItems(DetailWidget::m_deviceList);
+}

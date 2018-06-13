@@ -1,5 +1,6 @@
 #include "specificdata.h"
 
+QString  SpecificData::m_dataPath;
 SpecificData::SpecificData(int dataType, QString deviceName, int timeMode, QDate date) :
     m_dataType(dataType),
     m_deviceName(deviceName),
@@ -34,7 +35,7 @@ SpecificData::SpecificData(int dataType, QString deviceName, int timeMode, QDate
     case 0:
     {
         m_dataTimeVector.clear();
-        QString path = "/home/bean/gatewaydata/"+ m_deviceName + "/" +  QString::number(m_year)+ "/" + QString::number(m_month) +  "/" + QString::number(m_day);
+        QString path = m_dataPath + "/" + m_deviceName + "/" +  QString::number(m_year)+ "/" + QString::number(m_month) +  "/" + QString::number(m_day);
         QFile mFile(path);
         if(mFile.exists()) //If file exist
         {
@@ -65,7 +66,7 @@ SpecificData::SpecificData(int dataType, QString deviceName, int timeMode, QDate
     case 1:
     {
         m_dataTimeVector.clear();
-        QString path= "/home/bean/gatewaydata/"+ m_deviceName + "/" +  QString::number(m_year)+ "/" + QString::number(m_month) +  "/" + QString::number(m_day);
+        QString path= m_dataPath + "/" + m_deviceName + "/" +  QString::number(m_year)+ "/" + QString::number(m_month) +  "/" + QString::number(m_day);
         QFile mFile(path);
         if(mFile.exists()) //If file exist
         {
@@ -97,7 +98,7 @@ SpecificData::SpecificData(int dataType, QString deviceName, int timeMode, QDate
         m_dataTimeVector.clear();
         for(int i = 0; i < 7; i++)
         {
-            QString path = "/home/bean/gatewaydata/"+ m_deviceName + "/" +  QString::number(date.addDays(i).year())+ "/" + QString::number(date.addDays(i).month()) +  "/" + QString::number(date.addDays(i).day());
+            QString path = m_dataPath + "/" + m_deviceName + "/" +  QString::number(date.addDays(i).year())+ "/" + QString::number(date.addDays(i).month()) +  "/" + QString::number(date.addDays(i).day());
             QFile mFile(path);
             if(mFile.exists()) //If file exist
             {
@@ -129,7 +130,7 @@ SpecificData::SpecificData(int dataType, QString deviceName, int timeMode, QDate
         m_dataTimeVector.clear();
         for(int i = 0; i < 31; i++)
         {
-            QString path = "/home/bean/gatewaydata/"+ m_deviceName + "/" +  QString::number(m_year)+ "/" + QString::number(m_month) +  "/" + QString::number(i+1);
+            QString path = m_dataPath + "/" + m_deviceName + "/" +  QString::number(m_year)+ "/" + QString::number(m_month) +  "/" + QString::number(i+1);
             QFile mFile(path);
             if(mFile.exists()) //If file exist
             {
@@ -240,7 +241,7 @@ std::vector<Data_Time> SpecificData::getDataTimeVector(int dataType, int timeMod
     default:
         break;
     }
-    QString path = "/home/bean/gatewaydata/"+ m_deviceName + "/" +  QString::number(m_year)+ "/" + QString::number(m_month) +  "/" + QString::number(m_day);
+    QString path = m_dataPath + "/" + m_deviceName + "/" +  QString::number(m_year)+ "/" + QString::number(m_month) +  "/" + QString::number(m_day);
     QFile mFile(path);
     if(mFile.exists()) //If file exist
     {

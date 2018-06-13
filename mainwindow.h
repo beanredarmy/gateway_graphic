@@ -28,6 +28,11 @@ public slots:
     void showOverviewData(QString deviceName);
     void createTab();
     void changeTabTitle(QString titleName);
+private slots:
+    void on_lineEdit_dataPath_editingFinished();
+
+    void on_pushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     QPushButton* m_addTabButton;
