@@ -170,7 +170,7 @@ void MainWindow::changeTabTitle(QString titleName)
 //Remove a tab
 void MainWindow::removeTab(int tabOrder)
 {
-    if(tabOrder > 1) // Close a tab except 2 first tab
+    if(tabOrder > 0) // Close a tab except 2 first tab
     {
         delete ui->tabWidget->widget(tabOrder);
     } else showMessToStatusBar("Không thể đóng tab này");

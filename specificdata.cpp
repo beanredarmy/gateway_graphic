@@ -302,13 +302,26 @@ float SpecificData::getAverageValue(int dataType)
     std::vector<Data_Time> dataTimeVector = getDataTimeVector(dataType, 0);
     if(!dataTimeVector.empty())
     {
-        // calculate sum of all data in vector
-        for(uint i = dataTimeVector.size() - 4; i < dataTimeVector.size(); i++)
+        if(dataTimeVector.size() > 3)
         {
-            sumValue += dataTimeVector.at(i).first;
+            // calculate sum of all data in vector
+            for(uint i = dataTimeVector.size() - 4; i < dataTimeVector.size(); i++)
+            {
+                sumValue += dataTimeVector.at(i).first;
+            }
+            // and return avegare
+            return sumValue/4;
+        } else
+        {
+            // calculate sum of all data in vector
+            for(uint i = 0; i < dataTimeVector.size(); i++)
+            {
+                sumValue += dataTimeVector.at(i).first;
+            }
+            // and return avegare
+            return sumValue/dataTimeVector.size();
         }
-        // and return avegare
-        return sumValue/4;
+
     } else return 0;
 
 }
