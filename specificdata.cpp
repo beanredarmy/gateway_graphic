@@ -303,12 +303,12 @@ float SpecificData::getAverageValue(int dataType)
     if(!dataTimeVector.empty())
     {
         // calculate sum of all data in vector
-        for(uint i = 0; i < dataTimeVector.size(); i++)
+        for(uint i = dataTimeVector.size() - 4; i < dataTimeVector.size(); i++)
         {
             sumValue += dataTimeVector.at(i).first;
         }
         // and return avegare
-        return sumValue/dataTimeVector.size();
+        return sumValue/4;
     } else return 0;
 
 }
