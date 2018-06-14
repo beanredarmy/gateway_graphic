@@ -55,8 +55,6 @@ SpecificData::SpecificData(int dataType, QString deviceName, int timeMode, QDate
                             float data = line.mid(startOfData,4).toFloat();
                             m_dataTimeVector.push_back(Data_Time(data,time));
                         }
-
-
                 }
                 mFile.close();
             }

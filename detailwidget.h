@@ -25,6 +25,7 @@
 #include <QtWidgets/QApplication>
 #include <QtCharts/QValueAxis>
 #include <QLegendMarker>
+#include <QTimer>
 #include "specificdata.h"
 #include "callout.h"
 
@@ -54,12 +55,14 @@ public slots:
     void tooltip_temp(QPointF point, bool state);
     void changeTheme(int index);
     void changeDataDisplay(QString deviceName);
+    void updateDataDisplay();
 private:
     QChartView *m_chartView;
     Callout *m_tooltip;
     QChart::ChartTheme m_chartTheme;
-
-
+    QTimer *m_drawChartTimer;
+    QTimer *m_compareDataTimer;
+    QTimer *m_timer;
 public:
     static QStringList  m_deviceList;
     int m_order;

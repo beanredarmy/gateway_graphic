@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    //add dataPath to the default path
     SpecificData::m_dataPath = ui->lineEdit_dataPath->text();
     connectFileToClass();
     createAddTabButton();
@@ -50,6 +51,11 @@ void MainWindow::furtherSetup()
     chartView->setRenderHint(QPainter::Antialiasing, true);
     ui->gridLayout_graph->addWidget(chartView);
 
+    //Setting timer
+    m_timer = new QTimer(this);
+    //  update Overview data when time's out
+    connect(m_timer, SIGNAL(timeout()), this, SLOT(updateOverviewData()));
+
     //create a new tab when click to "addtab" button
     connect(m_addTabButton, SIGNAL (clicked()),this, SLOT (createTab()));
     //remove a tab when click to its "close" button
@@ -69,6 +75,11 @@ void MainWindow::showOverviewData(QString deviceName)
 {
     if(ui->cmbBox_ov_device->currentIndex() != 0)
     {
+        // clear timer when timeout
+        m_timer->setSingleShot(true);
+        // timeout per 5 seconds
+        m_timer->start(5000);
+
         //create specific data of today
         SpecificData *todayData = new SpecificData(deviceName,QDate::currentDate());
 
@@ -126,11 +137,15 @@ void MainWindow::showOverviewData(QString deviceName)
         ui->lcdN_ov_maxTempEnvi->display(temporaryData_Table.first);
         ui->lcdN_ov_maxTempEnvi->setToolTip(QString("T.Gian: %1h%2p").arg(round(temporaryData_Table.second)).arg((int)((temporaryData_Table.second-(int)temporaryData_Table.second)*60)));
 
-
         //release pointer
         delete todayData;
     } else showMessToStatusBar(QString("Hãy chọn thiết bị"));
 
+}
+
+void MainWindow::updateOverviewData()
+{
+    showOverviewData(ui->cmbBox_ov_device->currentText());
 }
 
 //Create a tab

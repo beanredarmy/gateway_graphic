@@ -26,6 +26,7 @@ public slots:
     void showMessToStatusBar(QString message);
     void removeTab(int tabOrder);
     void showOverviewData(QString deviceName);
+    void updateOverviewData();
     void createTab();
     void changeTabTitle(QString titleName);
 private slots:
@@ -35,6 +36,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QPushButton* m_addTabButton;
+    QTimer *m_timer;
 };
 
 #endif // MAINWINDOW_H

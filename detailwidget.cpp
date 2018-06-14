@@ -39,6 +39,21 @@ void DetailWidget::setupOptions()
     dateEdit_device1->setDate(QDate::currentDate());
     dateEdit_device2->setDate(QDate::currentDate());
     dateEdit_device3->setDate(QDate::currentDate());
+
+    //Setting timer
+    m_drawChartTimer = new QTimer(this);
+    //  update single Chart when time's out
+    connect(m_drawChartTimer, SIGNAL(timeout()), this, SLOT(drawChart()));
+
+    //Setting timer
+    m_compareDataTimer = new QTimer(this);
+    //  update compare data chart when time's out
+    connect(m_compareDataTimer, SIGNAL(timeout()), this, SLOT(compareData()));
+
+    //Setting timer
+    m_timer = new QTimer(this);
+    //  update Display data when time's out
+    connect(m_timer, SIGNAL(timeout()), this, SLOT(updateDataDisplay()));
 }
 
 void DetailWidget::setupFontChart(QChart *chart) const
@@ -295,6 +310,14 @@ void DetailWidget::drawChart()
 {
     if(cmbBox_device->currentIndex() != 0) //If currentText != Chon
     {
+        if(cmbBox_graphMode->currentIndex() == 0 || cmbBox_graphMode->currentIndex() == 1)
+        {
+            if(m_compareDataTimer->isActive()) m_compareDataTimer->stop();
+            // clear timer when timeout
+            m_drawChartTimer->setSingleShot(true);
+            // timeout per 5 seconds
+            m_drawChartTimer->start(5000);
+        }
         m_tooltip = 0;
         //get infor from comboboxes and dateEdit
         QString deviceName = cmbBox_device->currentText();
@@ -381,6 +404,14 @@ void DetailWidget::compareData()
     if(cmbBox_device->currentIndex() != 0) //If currentText != Chon
     {
         m_tooltip = 0;
+        if(cmbBox_graphMode->currentIndex() == 0 || cmbBox_graphMode->currentIndex() == 1)
+        {
+            if(m_drawChartTimer->isActive()) m_drawChartTimer->stop();
+            // clear timer when timeout
+            m_compareDataTimer->setSingleShot(true);
+            // timeout per 5 seconds
+            m_compareDataTimer->start(5000);
+        }
         //get infor from comboboxes and dateEdit
         QString deviceName = cmbBox_device->currentText();
         QString deviceName2 = cmbBox_device2->currentText();
@@ -572,28 +603,41 @@ void DetailWidget::changeTheme(int index)
 
 void DetailWidget::changeDataDisplay(QString deviceName)
 {
-    int dataType;
-    if(checkBox_humi_soil->isChecked()) dataType = 0;
-    else if(checkBox_humi_envi->isChecked()) dataType = 1;
-    else if(checkBox_temp_soil->isChecked()) dataType = 2;
-    else if(checkBox_temp_envi->isChecked()) dataType = 3;
-    SpecificData *todayData = new SpecificData(deviceName,QDate::currentDate());
+    if(cmbBox_device->currentIndex() != 0) //If currentText != Chon
+    {
+        // clear timer when timeout
+        m_timer->setSingleShot(true);
+        // timeout per 5 seconds
+        m_timer->start(5000);
 
-    Data_Time temporaryData_Table = todayData->getLastValue(dataType);
-    lcdNumber_curValue->display(temporaryData_Table.first);
-    lcdNumber_curValue->setToolTip(QString("T.Gian: %1h%2p").arg(round(temporaryData_Table.second)).arg((int)((temporaryData_Table.second-(int)temporaryData_Table.second)*60)));
+        int dataType;
+        if(checkBox_humi_soil->isChecked()) dataType = 0;
+        else if(checkBox_humi_envi->isChecked()) dataType = 1;
+        else if(checkBox_temp_soil->isChecked()) dataType = 2;
+        else if(checkBox_temp_envi->isChecked()) dataType = 3;
+        SpecificData *todayData = new SpecificData(deviceName,QDate::currentDate());
 
-    lcdNumber_aveValue->display(todayData->getAverageValue(dataType));
+        Data_Time temporaryData_Table = todayData->getLastValue(dataType);
+        lcdNumber_curValue->display(temporaryData_Table.first);
+        lcdNumber_curValue->setToolTip(QString("T.Gian: %1h%2p").arg(round(temporaryData_Table.second)).arg((int)((temporaryData_Table.second-(int)temporaryData_Table.second)*60)));
 
-    temporaryData_Table = todayData->getMinValue(dataType);
-    lcdNumber_minValue->display(temporaryData_Table.first);
-    lcdNumber_minValue->setToolTip(QString("T.Gian: %1h%2p").arg(round(temporaryData_Table.second)).arg((int)((temporaryData_Table.second-(int)temporaryData_Table.second)*60)));
+        lcdNumber_aveValue->display(todayData->getAverageValue(dataType));
 
-    temporaryData_Table = todayData->getMaxValue(dataType);
-    lcdNumber_maxValue->display(temporaryData_Table.first);
-    lcdNumber_maxValue->setToolTip(QString("T.Gian: %1h%2p").arg(round(temporaryData_Table.second)).arg((int)((temporaryData_Table.second-(int)temporaryData_Table.second)*60)));
+        temporaryData_Table = todayData->getMinValue(dataType);
+        lcdNumber_minValue->display(temporaryData_Table.first);
+        lcdNumber_minValue->setToolTip(QString("T.Gian: %1h%2p").arg(round(temporaryData_Table.second)).arg((int)((temporaryData_Table.second-(int)temporaryData_Table.second)*60)));
 
-    delete todayData;
+        temporaryData_Table = todayData->getMaxValue(dataType);
+        lcdNumber_maxValue->display(temporaryData_Table.first);
+        lcdNumber_maxValue->setToolTip(QString("T.Gian: %1h%2p").arg(round(temporaryData_Table.second)).arg((int)((temporaryData_Table.second-(int)temporaryData_Table.second)*60)));
+
+        delete todayData;
+    } else emit sendMessToStatusBar(QString("Hãy chọn thiết bị"));
+}
+
+void DetailWidget::updateDataDisplay()
+{
+    changeDataDisplay(cmbBox_device->currentText());
 }
 
 //initiate and setup widgets
