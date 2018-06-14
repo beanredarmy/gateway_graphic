@@ -620,16 +620,20 @@ void DetailWidget::changeDataDisplay(QString deviceName)
         Data_Time temporaryData_Table = todayData->getLastValue(dataType);
         lcdNumber_curValue->display(temporaryData_Table.first);
         lcdNumber_curValue->setToolTip(QString("T.Gian: %1h%2p").arg(round(temporaryData_Table.second)).arg((int)((temporaryData_Table.second-(int)temporaryData_Table.second)*60)));
+        lcdNumber_curValue->setPalette(Qt::red);
 
         lcdNumber_aveValue->display(todayData->getAverageValue(dataType));
+        lcdNumber_aveValue->setPalette(Qt::red);
 
         temporaryData_Table = todayData->getMinValue(dataType);
         lcdNumber_minValue->display(temporaryData_Table.first);
         lcdNumber_minValue->setToolTip(QString("T.Gian: %1h%2p").arg(round(temporaryData_Table.second)).arg((int)((temporaryData_Table.second-(int)temporaryData_Table.second)*60)));
+        lcdNumber_minValue->setPalette(Qt::red);
 
         temporaryData_Table = todayData->getMaxValue(dataType);
         lcdNumber_maxValue->display(temporaryData_Table.first);
         lcdNumber_maxValue->setToolTip(QString("T.Gian: %1h%2p").arg(round(temporaryData_Table.second)).arg((int)((temporaryData_Table.second-(int)temporaryData_Table.second)*60)));
+        lcdNumber_maxValue->setPalette(Qt::red);
 
         delete todayData;
     } else emit sendMessToStatusBar(QString("Hãy chọn thiết bị"));
